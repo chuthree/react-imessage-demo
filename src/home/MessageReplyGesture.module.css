@@ -1,0 +1,40 @@
+@media (max-width: 639px) {
+  /* Cover the whole conversation, including notices and reply connectors
+       outside message surfaces. Text copying stays in the message menu. */
+  .scope,
+  .scope * {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
+.scope :is([data-message-id], [data-reply-surface]),
+.scope :is([data-message-id], [data-reply-surface]) * {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+@media (min-width: 640px) {
+  .scope [data-message-actions],
+  .scope [data-message-actions] * {
+    user-select: text;
+    -webkit-user-select: text;
+    -webkit-touch-callout: default;
+  }
+
+  .scope [data-message-actions] image {
+    pointer-events: auto;
+  }
+
+  .scope [data-message-actions] image + rect {
+    pointer-events: none;
+  }
+}
+
+.scope a,
+.scope img,
+.scope image {
+  -webkit-user-drag: none;
+}

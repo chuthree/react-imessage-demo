@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@property --message-blue-top {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #2fa4fb;
+}
+
+@property --message-blue-bottom {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #2fa4fb;
+}
+
+@keyframes message-blue-top {
+  50% {
+    --message-blue-top: var(--message-blue-middle, #2fa4fb);
+  }
+  from {
+    --message-blue-top: var(--message-blue-start, #058afe);
+  }
+  to {
+    --message-blue-top: var(--message-blue-end, #4dbdfb);
+  }
+}
+
+@keyframes message-blue-bottom {
+  50% {
+    --message-blue-bottom: var(--message-blue-middle, #2fa4fb);
+  }
+  from {
+    --message-blue-bottom: var(--message-blue-start, #058afe);
+  }
+  to {
+    --message-blue-bottom: var(--message-blue-end, #4dbdfb);
+  }
+}
+
+@supports (animation-timeline: view()) and (animation-range: entry 0% exit 0%) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-home-thread] [data-outgoing-message] {
+      animation-name: message-blue-top, message-blue-bottom;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view(block), view(block);
+      animation-range:
+        entry 0% exit 0%,
+        entry 100% exit 100%;
+    }
+  }
+}
+
+:root {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+    "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  margin: 0;
+}
+button {
+  touch-action: manipulation;
+}
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}

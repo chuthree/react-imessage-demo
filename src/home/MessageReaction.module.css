@@ -1,0 +1,96 @@
+/* Approximate the supplied 2026-10-25 clip: body leads, icon follows,
+   then the two connector dots settle independently over about 450ms. */
+.reaction[data-animate] .body {
+  transform-origin: 50% 85%;
+  animation: bodyIn 450ms linear both;
+}
+.reaction[data-animate] .icon {
+  animation: iconIn 400ms 50ms linear both;
+}
+.reaction[data-animate] .connector {
+  animation: connectorIn 350ms 35ms linear both;
+}
+.reaction[data-animate] .dot {
+  animation: dotIn 300ms 65ms linear both;
+}
+@keyframes bodyIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.15);
+  }
+  11% {
+    opacity: 1;
+    transform: translateY(5px) scale(0.55);
+  }
+  27% {
+    transform: translateY(1px) scale(0.93);
+  }
+  47% {
+    transform: translateY(-1px) scale(1.08);
+  }
+  73% {
+    transform: translateY(0) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes iconIn {
+  0% {
+    opacity: 0;
+    transform: translateY(3px) scale(0.5);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(-1px) scale(1.12);
+  }
+  60% {
+    transform: translateY(0) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes connectorIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-3px) scale(0.5);
+  }
+  35% {
+    opacity: 1;
+    transform: translateY(1px) scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes dotIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.6);
+  }
+  45% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reaction[data-animate] :is(.body, .icon, .connector, .dot) {
+    animation: fadeIn 150ms ease-out both;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

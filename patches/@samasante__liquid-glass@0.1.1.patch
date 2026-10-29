@@ -1,0 +1,192 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 6d8ef39b71a0ccb489ccf6f0458785fbaef9d459..f027c6be6bcf569ad18f96873bbccfa617366303 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -89,6 +89,8 @@ interface GlassLensParams {
+     /** Width of the edge-refraction band as a 0..1 fraction of min(W,H). Smaller =
+      *  a crisper, thinner meniscus. @default 0.16 */
+     bendWidth: number;
++    /** Keep peak edge bending through the outer rim (default false). */
++    bendEdgeHold?: boolean;
+     /** Optional drop shadow following the lens (drag state). */
+     edgeShadow?: string;
+     edgeInsetShadow?: string;
+diff --git a/dist/index.js b/dist/index.js
+index 81c5c028d769ef5544cb965fceeed5367c2b36ab..249c74ac82a8bf4062b090951cdb2ae04fa6fd6e 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -121,7 +121,8 @@ var createLensMapGenerator = (size) => {
+         curvature = 0,
+         splay = 0,
+         bend = 0,
+-        bendWidth = 0.16
++        bendWidth = 0.16,
++        bendEdgeHold = false
+       } = shape;
+       const data = image.data;
+       const half = size >> 1;
+@@ -241,7 +242,7 @@ var createLensMapGenerator = (size) => {
+             if (s > 0) {
+               const len = Math.sqrt(dirX * dirX + dirY * dirY);
+               if (len > 1e-4) {
+-                const m = 6.75 * s * s * (1 - s);
++                const m = bendEdgeHold && s >= 2 / 3 ? 1 : 6.75 * s * s * (1 - s);
+                 const a = 0.5 * bend * m * edgeOpacity / len;
+                 dx += dirX * a;
+                 dy += dirY * a;
+@@ -865,7 +866,8 @@ var useLensRenderer = (outRef, containerRef, getFrame, specs, maxDpr, driveOnVid
+     m0.sheenFalloff,
+     m0.sheenAngle,
+     m0.bend,
+-    m0.bendWidth
++    m0.bendWidth,
++    m0.bendEdgeHold
+   ]);
+   useEffect(() => {
+     const renderer = rendererRef.current;
+@@ -889,7 +891,8 @@ var useLensRenderer = (outRef, containerRef, getFrame, specs, maxDpr, driveOnVid
+       curvature: m0.curvature,
+       splay: m0.splay,
+       bend: m0.bend,
+-      bendWidth: m0.bendWidth
++      bendWidth: m0.bendWidth,
++      bendEdgeHold: m0.bendEdgeHold
+     });
+     let stale = false;
+     const img = new Image();
+@@ -924,7 +927,8 @@ var useLensRenderer = (outRef, containerRef, getFrame, specs, maxDpr, driveOnVid
+       m.sheenFalloff,
+       m.sheenAngle,
+       m.bend,
+-      m.bendWidth
++      m.bendWidth,
++      m.bendEdgeHold
+     ]);
+   };
+   const lensKeys = specs.map(keyOf);
+@@ -971,7 +975,8 @@ var useLensRenderer = (outRef, containerRef, getFrame, specs, maxDpr, driveOnVid
+         curvature: m.curvature,
+         splay: m.splay,
+         bend: m.bend,
+-        bendWidth: m.bendWidth
++        bendWidth: m.bendWidth,
++        bendEdgeHold: m.bendEdgeHold
+       });
+       let stale = false;
+       const img = new Image();
+@@ -1416,17 +1421,26 @@ var GlassMaterial = ({
+   );
+   const mapUrlRef = useRef("");
+   const versionRef = useRef(0);
+-  const [box, setBox] = useState({
++  const [measuredBox, setBox] = useState({
+     w: 0,
+     h: 0,
+     r: 0,
+     appliedR: void 0
+   });
+   const [needsRelative, setNeedsRelative] = useState(false);
+-  const sized = box.w > 0 && box.h > 0;
+   const explicitR = num(radius);
+   const explicitW = num(width);
+   const explicitH = num(height);
++  // Controlled geometry must reach the material in the same commit as its box,
++  // without waiting for ResizeObserver to catch up to an animated size.
++  const controlledGeometry = explicitW != null && explicitH != null && explicitR != null;
++  const box = controlledGeometry ? {
++    w: explicitW,
++    h: explicitH,
++    r: explicitR ?? 0,
++    appliedR: explicitR
++  } : measuredBox;
++  const sized = box.w > 0 && box.h > 0;
+   const styleHasRadius = style?.borderRadius != null;
+   const adoptedRef = useRef(false);
+   useLayoutEffect(() => {
+@@ -1435,8 +1449,15 @@ var GlassMaterial = ({
+   useLayoutEffect(() => {
+     const el = wrapRef.current;
+     if (!el) return;
+-    const measure = () => {
+-      const rect = el.getBoundingClientRect();
++    if (controlledGeometry) return;
++    const measure = (entries) => {
++      // SVG user-space units are layout CSS pixels, not the visually zoomed rect.
++      // Preserve fractional dimensions from ResizeObserver when available.
++      const borderBox = entries?.[0]?.borderBoxSize?.[0];
++      const rect = {
++        width: borderBox?.inlineSize ?? el.offsetWidth,
++        height: borderBox?.blockSize ?? el.offsetHeight
++      };
+       const hasCS = typeof getComputedStyle !== "undefined";
+       const cs = hasCS ? getComputedStyle(el) : null;
+       const own = cs ? parseFloat(cs.borderTopLeftRadius) || 0 : 0;
+@@ -1476,7 +1497,7 @@ var GlassMaterial = ({
+       ro.disconnect();
+       window.removeEventListener("resize", measure);
+     };
+-  }, [explicitR, styleHasRadius, className]);
++  }, [controlledGeometry, explicitR, styleHasRadius, className]);
+   const shapeKey = JSON.stringify([
+     box.w,
+     box.h,
+@@ -1489,6 +1510,7 @@ var GlassMaterial = ({
+     merged.splay,
+     merged.bend,
+     merged.bendWidth,
++    merged.bendEdgeHold,
+     merged.sheen,
+     merged.sheenWidth,
+     merged.sheenFalloff,
+@@ -1508,7 +1530,7 @@ var GlassMaterial = ({
+   const mapMatrix = mapScaleX === 1 && mapScaleY === 1 ? null : matrixForAxisScale(mapScaleX, mapScaleY);
+   const hasSpecular = merged.glow > 0 || merged.sheen > 0;
+   useLayoutEffect(() => {
+-    if (!sized) return;
++    if (!sized || !supportsUrl) return;
+     const mapSize = merged.mapSize;
+     if (!generatorRef.current || generatorRef.current.size !== mapSize) {
+       generatorRef.current?.gen.dispose();
+@@ -1534,12 +1556,13 @@ var GlassMaterial = ({
+       curvature: merged.curvature,
+       splay: merged.splay,
+       bend: merged.bend,
+-      bendWidth: merged.bendWidth
++      bendWidth: merged.bendWidth,
++      bendEdgeHold: merged.bendEdgeHold
+     });
+     mapUrlRef.current = url;
+     feImageRef.current?.setAttribute("href", url);
+     applyBackdropFilter();
+-  }, [sized, shapeKey]);
++  }, [sized, shapeKey, supportsUrl]);
+   const applyBackdropFilter = useMemo(
+     () => () => {
+       const el = wrapRef.current;
+@@ -1694,7 +1717,7 @@ var GlassMaterial = ({
+                 y: -margin,
+                 width: box.w + 2 * margin,
+                 height: box.h + 2 * margin,
+-                children: sized && /* @__PURE__ */ jsx(
++                children: sized && supportsUrl && /* @__PURE__ */ jsx(
+                   MaterialFilterContents,
+                   {
+                     dispScale,
+@@ -2408,7 +2431,8 @@ var GlassDOM = ({
+       curvature: lensParams.curvature,
+       splay: lensParams.splay,
+       bend: lensParams.bend,
+-      bendWidth: lensParams.bendWidth
++      bendWidth: lensParams.bendWidth,
++      bendEdgeHold: lensParams.bendEdgeHold
+     });
+     mapUrlRef.current = url;
+     feImageRef.current?.setAttribute("href", url);
+@@ -2437,6 +2461,7 @@ var GlassDOM = ({
+     merged.splay,
+     merged.bend,
+     merged.bendWidth,
++    merged.bendEdgeHold,
+     // Auto-fit: when a geometry prop is omitted the effective extent is the
+     // measured box, so fold the measured size into the shape key (regen on resize).
+     isGlassMotionValue(lensW) ? "mv" : lensW ?? (size.w / 2 || merged.lensW),

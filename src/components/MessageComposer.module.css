@@ -1,0 +1,261 @@
+.stage {
+  display: contents;
+}
+
+@media (max-width: 639px) {
+  .composer {
+    --composer-reveal-blur: 0px;
+    transform: scale(1);
+    opacity: 1;
+    transition:
+      transform 280ms ease,
+      opacity 280ms ease;
+  }
+
+  .composer :is([data-profile-glass-material], [data-profile-glass-outline]) {
+    transition: filter 280ms ease;
+  }
+
+  .composer[data-mobile-hidden] {
+    --composer-reveal-blur: 6px;
+    --home-glass-shadow: none;
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  .composer[data-visibility-pending] {
+    visibility: hidden;
+    transition: none;
+  }
+
+  .composer[data-entering] {
+    height: var(--home-composer-height, 40px);
+  }
+
+  .composer[data-entering] .stage {
+    /* Keep all entrance paint inside the content area, above the safe gap. */
+    position: absolute;
+    inset: -100px 0 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 28px;
+    overflow: hidden;
+  }
+
+  .composer[data-entering] .controls {
+    flex-shrink: 0;
+    transform-origin: center bottom;
+    animation:
+      grow 1280ms linear both,
+      flight 1280ms linear both,
+      squash 1280ms linear both;
+  }
+
+  .composer[data-entering] .capsule {
+    z-index: 41;
+    animation: splitCapsule 1280ms linear both;
+  }
+
+  .composer[data-entering] .controls > div:not(.capsule) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    --home-glass-shadow: none;
+    animation: attachmentIn 1280ms linear both;
+  }
+
+  .composer[data-entering] [data-composer-attachment-icon],
+  .composer[data-entering] [data-chat-source] {
+    animation: contentIn 1280ms linear both;
+  }
+
+  .composer[data-entering] textarea {
+    field-sizing: fixed !important;
+    height: 40px;
+  }
+
+  /* Fit the reference's contact phase: expand late in the fall, then keep
+       growing while the compressed surface recovers upward from its base. */
+  @keyframes grow {
+    0% {
+      width: 40px;
+    }
+    44% {
+      width: 40px;
+    }
+    48% {
+      width: calc(10% + 36px);
+    }
+    52% {
+      width: calc(29% + 28.4px);
+    }
+    58% {
+      width: calc(64% + 14.4px);
+    }
+    64% {
+      width: calc(84% + 6.4px);
+    }
+    70% {
+      width: calc(97% + 1.2px);
+    }
+    78% {
+      width: calc(102.5% - 1px);
+    }
+    86% {
+      width: calc(101.2% - 0.48px);
+    }
+    94% {
+      width: calc(100.3% - 0.12px);
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  @keyframes flight {
+    0% {
+      translate: 0 0;
+      animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+    }
+    12% {
+      translate: 0 -8px;
+      animation-timing-function: cubic-bezier(0.3, 0.15, 0.5, 1);
+    }
+    30% {
+      translate: 0 -56px;
+      animation-timing-function: cubic-bezier(0.33333, 0, 0.66667, 0.33333);
+    }
+    38% {
+      translate: 0 -54px;
+      /* Match the apex drift (~39px/s), then accelerate into contact. */
+      animation-timing-function: cubic-bezier(0.3, 0.055, 0.7, 0.65);
+    }
+    58%,
+    100% {
+      translate: 0 0;
+    }
+  }
+
+  @keyframes squash {
+    0% {
+      transform: scaleY(1);
+    }
+    38% {
+      transform: scaleY(1);
+    }
+    46% {
+      transform: scaleY(0.9);
+    }
+    52% {
+      transform: scaleY(0.72);
+    }
+    58% {
+      transform: scaleY(0.62);
+    }
+    64% {
+      transform: scaleY(0.66);
+    }
+    70% {
+      transform: scaleY(0.8);
+    }
+    78% {
+      transform: scaleY(0.98);
+    }
+    86% {
+      transform: scaleY(1.04);
+    }
+    94% {
+      transform: scaleY(1.012);
+    }
+    100% {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes splitCapsule {
+    /* Make room for the side circle as it leaves the capsule's end. */
+    0%,
+    44% {
+      margin-left: 0px;
+    }
+    48% {
+      margin-left: 4.8px;
+    }
+    52% {
+      margin-left: 13.92px;
+    }
+    58% {
+      margin-left: 30.72px;
+    }
+    64% {
+      margin-left: 40.32px;
+    }
+    70% {
+      margin-left: 46.56px;
+    }
+    78% {
+      margin-left: 49.2px;
+    }
+    86% {
+      margin-left: 48.576px;
+    }
+    94% {
+      margin-left: 48.144px;
+    }
+    100% {
+      margin-left: 48px;
+    }
+  }
+
+  @keyframes attachmentIn {
+    /* Release from behind the 40px capsule when growth starts. The
+           shared controls and splitCapsule drive all motion through 100%. */
+    0% {
+      visibility: hidden;
+      animation-timing-function: step-end;
+    }
+    44%,
+    100% {
+      visibility: visible;
+    }
+  }
+
+  @keyframes contentIn {
+    0%,
+    64% {
+      opacity: 0;
+    }
+    70% {
+      opacity: 0.32;
+    }
+    78% {
+      opacity: 0.8;
+    }
+    86%,
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .composer,
+    .composer[data-mobile-hidden] {
+      --composer-reveal-blur: 0px;
+      transform: none;
+      transition: opacity 120ms ease;
+    }
+
+    .composer :is([data-profile-glass-material], [data-profile-glass-outline]) {
+      transition: none;
+    }
+
+    .composer[data-entering] .controls,
+    .composer[data-entering] .capsule,
+    .composer[data-entering] .controls > div:not(.capsule),
+    .composer[data-entering] [data-composer-attachment-icon],
+    .composer[data-entering] [data-chat-source] {
+      animation-duration: 1ms;
+    }
+  }
+}

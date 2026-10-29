@@ -1,0 +1,5 @@
+patchedDependencies:
+  "@samasante/liquid-glass@0.1.1": "patches/@samasante__liquid-glass@0.1.1.patch"
+
+allowBuilds:
+  esbuild: true
