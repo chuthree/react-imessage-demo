@@ -52,6 +52,13 @@ import {
 const previewDuration = { open: 0.45, close: 0.4 } as const;
 const fadeEasing = "cubic-bezier(0.23, 1, 0.32, 1)";
 
+function isPreviewBackground(target: EventTarget, viewport: EventTarget) {
+  return (
+    target === viewport ||
+    (target instanceof Element && target.matches("[data-reply-surface]"))
+  );
+}
+
 function surfaceBounds(element: HTMLElement) {
   // Outgoing shared surfaces include a full-width row and delivery receipts.
   // Anchor both views to the visible bubble, not that row's left edge.
@@ -880,7 +887,10 @@ export default function ReplyPreview({
                           if (
                             event.isPrimary &&
                             event.button === 0 &&
-                            event.target === event.currentTarget
+                            isPreviewBackground(
+                              event.target,
+                              event.currentTarget,
+                            )
                           )
                             outsidePress.current = {
                               id: event.pointerId,
@@ -904,7 +914,10 @@ export default function ReplyPreview({
                           const press = outsidePress.current;
                           if (
                             !press ||
-                            event.target !== event.currentTarget ||
+                            !isPreviewBackground(
+                              event.target,
+                              event.currentTarget,
+                            ) ||
                             event.pointerId !== press.id ||
                             Math.hypot(
                               event.clientX - press.x,
@@ -933,7 +946,10 @@ export default function ReplyPreview({
                         onClick={(event) => {
                           const dismiss =
                             outsidePress.current &&
-                            event.target === event.currentTarget &&
+                            isPreviewBackground(
+                              event.target,
+                              event.currentTarget,
+                            ) &&
                             !event.defaultPrevented;
                           outsidePress.current = null;
                           if (dismiss) {
