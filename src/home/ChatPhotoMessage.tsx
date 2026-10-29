@@ -4,7 +4,7 @@ import {
   useRef,
   useState,
   type ReactNode,
-  type SVGProps,
+  type ImgHTMLAttributes,
 } from "react";
 import { useReducedMotion } from "framer-motion";
 import { useTranslations } from "use-intl";
@@ -24,10 +24,10 @@ function ChatPhotoImage({
   photo: ChatPhoto;
   messageId: string;
   index: number;
-} & SVGProps<SVGImageElement>) {
+} & ImgHTMLAttributes<HTMLImageElement>) {
   const reducedMotion = useReducedMotion();
   const animationId = photo.animationId;
-  const imageRef = useRef<SVGImageElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
   useSharedReplyImage(
     animationId || /\.gif(?:$|[?#])/i.test(photo.url) ? messageId : "",
     index,
@@ -51,17 +51,20 @@ function ChatPhotoImage({
     };
   }, [animationId]);
   return (
-    <g>
-      <image
+    <div className="relative size-full">
+      <img
         ref={imageRef}
         {...props}
-        href={
+        alt=""
+        draggable={false}
+        decoding="sync"
+        src={
           !reducedMotion && animationId && animation?.id === animationId
             ? animation.url
             : photo.url
         }
       />
-    </g>
+    </div>
   );
 }
 
@@ -164,46 +167,38 @@ export default function ChatPhotoMessage({
                 : undefined,
             }}
           >
-            <svg
-              role="img"
-              aria-label={t(imageKind, { name: photo.name })}
-              viewBox={`0 0 ${card.width} ${card.height + bottom}`}
-              className="block size-full overflow-visible"
-            >
+            <svg aria-hidden="true" className="absolute size-0">
               <defs>
-                <clipPath id={`${id}-${index}`}>
+                <clipPath id={`${id}-${index}`} clipPathUnits="objectBoundingBox">
                   {stacked ? (
-                    <rect width={card.width} height={card.height} rx="20" />
+                    <rect
+                      width={card.width}
+                      height={card.height}
+                      rx="20"
+                      transform={`scale(${1 / card.width} ${1 / (card.height + bottom)})`}
+                    />
                   ) : (
                     <path
                       d={bubblePath(card.width, card.height, 20, tail)}
-                      transform={
-                        outgoing
-                          ? `translate(${card.width} 0) scale(-1 1)`
-                          : undefined
-                      }
+                      transform={`scale(${1 / card.width} ${1 / (card.height + bottom)})${outgoing ? ` translate(${card.width} 0) scale(-1 1)` : ""}`}
                     />
                   )}
                 </clipPath>
               </defs>
+            </svg>
+            <div
+              role="img"
+              aria-label={t(imageKind, { name: photo.name })}
+              className="size-full"
+              style={{ clipPath: `url(#${id}-${index})` }}
+            >
               <ChatPhotoImage
                 photo={photo}
                 messageId={messageId}
                 index={index}
-                width={card.width}
-                height={card.height + bottom}
-                preserveAspectRatio="xMidYMid slice"
-                clipPath={`url(#${id}-${index})`}
-                className="pointer-events-none"
+                className="pointer-events-none absolute inset-0 size-full object-cover"
               />
-              <rect
-                aria-hidden="true"
-                width={card.width}
-                height={card.height + bottom}
-                fill="transparent"
-                clipPath={`url(#${id}-${index})`}
-              />
-            </svg>
+            </div>
             {reaction && reactionIndex === index && (
               <MessageReaction
                 photo

@@ -85,8 +85,8 @@ type ReplySurfaceRegistry = {
   images: Map<
     string,
     {
-      source?: SVGImageElement;
-      preview?: SVGImageElement;
+      source?: HTMLImageElement;
+      preview?: HTMLImageElement;
       restore?: () => void;
     }
   >;
@@ -114,7 +114,7 @@ export function useReplyPreview() {
 export function useSharedReplyImage(
   messageId: string,
   index: number,
-  imageRef: RefObject<SVGImageElement | null>,
+  imageRef: RefObject<HTMLImageElement | null>,
 ) {
   const context = useContext(ReplyPreviewContext);
   const surfaces = context?.surfaces;
@@ -140,8 +140,6 @@ export function useSharedReplyImage(
     if (source && preview && mounted) {
       const sourceSlot = source.parentElement!;
       const previewSlot = preview.parentElement!;
-      const attributes = ["width", "height", "clip-path"];
-      const original = attributes.map((name) => source.getAttribute(name));
       const move = (slot: Element) => {
         const target = slot as Element & {
           moveBefore?: (node: Node, child: Node | null) => void;
@@ -155,19 +153,10 @@ export function useSharedReplyImage(
           target.moveBefore(source, null);
         else slot.insertBefore(source, null);
       };
-      for (const name of attributes) {
-        const value = preview.getAttribute(name);
-        if (value !== null) source.setAttribute(name, value);
-      }
       preview.style.visibility = "hidden";
       move(previewSlot);
       entry.restore = () => {
         move(sourceSlot);
-        attributes.forEach((name, i) => {
-          const value = original[i];
-          if (value === null) source.removeAttribute(name);
-          else source.setAttribute(name, value);
-        });
         preview.style.removeProperty("visibility");
       };
     }
