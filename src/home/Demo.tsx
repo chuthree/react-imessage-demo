@@ -184,7 +184,7 @@ export default function Demo() {
       id: "monday",
       date: "2025-10-15T09:41:00+08:00",
       label: t("firstDate"),
-      keys: ["intro"],
+      keys: ["introGreeting", "intro"],
     },
     {
       id: "tuesday",
