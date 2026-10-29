@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="public/apple-touch-icon.png" width="80" height="80" alt="iMessage demo icon" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="public/apple-touch-icon-dark.png" />
+    <img src="public/apple-touch-icon.png" width="80" height="80" alt="iMessage demo icon" />
+  </picture>
 </p>
 
 <h1 align="center">iMessage demo</h1>

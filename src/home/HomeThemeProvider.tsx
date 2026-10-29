@@ -40,6 +40,14 @@ export default function HomeThemeProvider({
   useLayoutEffect(() => {
     const root = document.documentElement;
     root.dataset.homeTheme = resolvedTheme;
+    document
+      .querySelector<HTMLLinkElement>('link[rel="apple-touch-icon"]')
+      ?.setAttribute(
+        "href",
+        resolvedTheme === "dark"
+          ? "/apple-touch-icon-dark.png"
+          : "/apple-touch-icon.png",
+      );
     if (!(window as Window & { __forceLightMode?: boolean }).__forceLightMode) {
       root.classList.toggle("dark", resolvedTheme === "dark");
     }
