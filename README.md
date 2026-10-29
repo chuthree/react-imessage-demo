@@ -14,10 +14,12 @@
 
 <p align="center"><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/preview-dark.png" />
-  <img src=".github/assets/preview-light.png" alt="iMessage demo with photos, threaded replies and reactions" width="1200" />
-</picture>
+<a href="https://imessage-demo.chu3.top/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/preview-dark.png" />
+    <img src=".github/assets/preview-light.png" alt="iMessage demo with photos, threaded replies and reactions" width="1200" />
+  </picture>
+</a>
 
 ## Features
 
