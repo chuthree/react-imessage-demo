@@ -15,8 +15,8 @@
 <p align="center"><a href="README.md">English</a> · <strong>简体中文</strong></p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/preview-dark.png" />
-  <img src="docs/preview-light.png" alt="iMessage demo 的照片、引用回复与回应展示" width="1200" />
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/preview-dark.png" />
+  <img src=".github/assets/preview-light.png" alt="iMessage demo 的照片、引用回复与回应展示" width="1200" />
 </picture>
 
 ## 功能
