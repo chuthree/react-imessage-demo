@@ -14,8 +14,6 @@
 
 <p align="center"><a href="README.md">English</a> · <strong>简体中文</strong></p>
 
-<p align="center"><a href="https://imessage-demo.chu3.top/">在线演示</a></p>
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/assets/preview-dark.png" />
   <img src=".github/assets/preview-light.png" alt="iMessage demo 的照片、引用回复与回应展示" width="1200" />
