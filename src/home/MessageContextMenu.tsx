@@ -95,7 +95,7 @@ export default function MessageContextMenu({
       if (
         message &&
         messageSurface(message).hasAttribute("data-message-actions") &&
-        messageSurface(message).contains(event.target as Node)
+        message.contains(event.target as Node)
       )
         return false;
       event.preventDefault();
