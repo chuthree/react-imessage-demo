@@ -10,8 +10,20 @@ import DemoControls from "./components/DemoControls";
 import "./global.css";
 import "./home/mobile.css";
 
+const localeStorageKey = "imessage-demo:locale";
+
 function App() {
-  const [locale, setLocale] = useState<"zh" | "en">("zh");
+  const [locale, setLocale] = useState<"zh" | "en">(() => {
+    try {
+      const saved = localStorage.getItem(localeStorageKey);
+      if (saved === "zh" || saved === "en") return saved;
+    } catch {
+      // Browser language still works when storage is blocked.
+    }
+    return /^zh(?:-|$)/i.test(navigator.languages[0] || navigator.language)
+      ? "zh"
+      : "en";
+  });
   useEffect(() => {
     document.documentElement.lang = locale === "zh" ? "zh-CN" : "en";
   }, [locale]);
@@ -26,7 +38,15 @@ function App() {
           <Demo />
         </HomePhoneFrame>
         <DemoControls
-          onToggleLanguage={() => setLocale(locale === "zh" ? "en" : "zh")}
+          onToggleLanguage={() => {
+            const next = locale === "zh" ? "en" : "zh";
+            setLocale(next);
+            try {
+              localStorage.setItem(localeStorageKey, next);
+            } catch {
+              // Switching remains available for the current page.
+            }
+          }}
         />
       </IntlProvider>
     </HomeThemeProvider>

@@ -1,45 +1,53 @@
 <p align="center">
-  <img src="public/apple-touch-icon.png" width="80" height="80" alt="iMessage demo 图标" />
+  <img src="public/apple-touch-icon.png" width="80" height="80" alt="iMessage demo icon" />
 </p>
 
 <h1 align="center">iMessage demo</h1>
 
-<p align="center">用 React 复现 iMessage 的聊天界面与交互</p>
+<p align="center">
+  An iMessage interface and interaction demo built with React<br />
+  English and Chinese, with light and dark modes that follow your system
+</p>
 
-基于 React、TypeScript 与 Vite 的独立示例，回复和回应在本地模拟，无需 API 或密钥。
+<p align="center"><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
 
-## 功能
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/preview-dark.png" />
+  <img src="docs/preview-light.png" alt="iMessage demo with photos, threaded replies and reactions" width="1200" />
+</picture>
 
-- 消息发送、已读回执、正在输入状态，以及发送、接收和回应音效
-- 长按或右键拷贝、回复消息，查看同一线程的回复
-- 点击「+」选择照片或拍照，每次最多两张；每张照片可单独回复和显示回应
-- 玻璃材质与系统深浅色；桌面左下角可切换中英文
-- 桌面端显示 iPhone 外框，小屏幕使用原生页面滚动
+## Features
 
-## 本地运行
+- Message sending, read receipts and typing indicators, with sounds for sending, receiving and reactions
+- Hold or right-click a message to copy it, reply or view its thread
+- Choose photos or use the camera from “+”, up to two at a time; reply to individual photos and see their reactions
+- Glass surfaces and system light and dark modes; language follows your browser, with manual choices remembered via the bottom-left desktop control
+- An iPhone frame on desktop and native page scrolling on smaller screens
 
-使用 Node.js 24 与 pnpm 12。
+## Run locally
+
+Use Node.js 24 and pnpm 12.
 
 ```sh
 pnpm install
 pnpm dev
 ```
 
-打开终端中显示的本地地址。
+Open the local address shown in your terminal.
 
 ```sh
-pnpm build    # 类型检查并构建到 dist/
-pnpm preview  # 预览构建结果
+pnpm build    # Type-check and build to dist/
+pnpm preview  # Preview the production build
 ```
 
-Enter 换行，Ctrl / Command + Enter 发送，也可点击发送按钮。
+Enter adds a new line. Ctrl / Command + Enter sends the message, or use the send button.
 
-消息和选择的照片仅保存在当前页面，不会上传，刷新后重置。
+Messages and selected photos stay on the current page and are never uploaded. Refreshing the page resets them.
 
-## 声明
+## Disclaimer
 
-本项目仅供学习、界面研究与非商业演示，与 Apple Inc. 无关联，也未获其认可或赞助。
+This project is for learning, interface research and non-commercial demonstrations. It is not affiliated with, endorsed or sponsored by Apple Inc.
 
-Apple 相关素材及系统字体衍生数据归 Apple Inc. 或相应权利人所有，保留所有权利。
+Apple-related assets and data derived from system fonts belong to Apple Inc. or their respective owners. All rights reserved.
 
-素材来源与许可见 [CREDITS](CREDITS.md)。
+See [CREDITS](CREDITS.md) for asset sources and licenses.
