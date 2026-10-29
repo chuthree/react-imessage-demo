@@ -214,8 +214,8 @@ export default function Demo() {
               {
                 url: coffeeImage,
                 name: t("coffeeImage"),
-                width: 2712,
-                height: 2021,
+                width: 960,
+                height: 716,
               },
             ],
           }
@@ -252,14 +252,14 @@ export default function Demo() {
           {
             url: rooftopsImage,
             name: t("rooftopsImage"),
-            width: 2372,
-            height: 1768,
+            width: 960,
+            height: 716,
           },
           {
             url: dogImage,
             name: t("dogImage"),
-            width: 1036,
-            height: 772,
+            width: 960,
+            height: 716,
           },
         ],
         context: {
