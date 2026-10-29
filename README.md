@@ -14,6 +14,8 @@
 
 <p align="center"><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
 
+<p align="center"><a href="https://imessage-demo.chu3.top/">Live demo</a></p>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/assets/preview-dark.png" />
   <img src=".github/assets/preview-light.png" alt="iMessage demo with photos, threaded replies and reactions" width="1200" />
@@ -42,6 +44,8 @@ Open the local address shown in your terminal.
 pnpm build    # Type-check and build to dist/
 pnpm preview  # Preview the production build
 ```
+
+## Usage
 
 Enter adds a new line. Ctrl / Command + Enter sends the message, or use the send button.
 
