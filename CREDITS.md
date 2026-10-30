@@ -12,4 +12,39 @@ Original code, documentation, and website icons are licensed under [MIT](LICENSE
 
 Apple-related images, system graphics, emoji, sounds, and data derived from system fonts belong to Apple Inc. or their respective owners. Copyright © Apple Inc. All rights reserved. This project does not grant any additional license to these materials.
 
-The glass layout patch, smooth contours, and progressive header blur are based on [Liquid Glass](https://github.com/samasante/liquid-glass), [Lisse](https://github.com/JaceThings/Lisse), and [Motion Primitives](https://github.com/ibelick/motion-primitives), respectively. Their original license texts are preserved in [third-party-licenses](third-party-licenses/). Other dependencies retain their licenses in their installed packages; see the lockfile for versions.
+## Third-party code
+
+The following components use the MIT License reproduced below. Other dependencies retain their licenses in their installed packages.
+
+| Project | Usage | Copyright |
+| --- | --- | --- |
+| [Liquid Glass](https://github.com/samasante/liquid-glass) | Glass rendering and layout patch | Copyright (c) 2026 Sam Asante |
+| [Lisse](https://github.com/JaceThings/Lisse) | Smooth contours | Copyright (c) 2026 Jace Attard |
+| [Motion Primitives](https://github.com/ibelick/motion-primitives) | Progressive header blur | Copyright (c) 2024 ibelick |
+
+<details>
+<summary>MIT License</summary>
+
+The following terms apply to each component above, with its respective copyright notice.
+
+```text
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
