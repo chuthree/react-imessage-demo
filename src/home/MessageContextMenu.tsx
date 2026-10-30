@@ -138,8 +138,9 @@ export default function MessageContextMenu({
     action?.();
   });
 
+  // Keep the returning surface above reply connectors until its transform is restored.
   const surfaceZIndex = useEffectEvent((original: string) =>
-    open ? "21" : original,
+    open ? "21" : original || "1",
   );
 
   useLayoutEffect(() => {
