@@ -1,5 +1,5 @@
 import coffeeImage from "../assets/demo-coffee.webp";
-import rooftopsImage from "../assets/demo-rooftops.webp";
+import alleyImage from "../assets/demo-alley.webp";
 import dogImage from "../assets/demo-dog.webp";
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useFormatter, useLocale, useTranslations } from "use-intl";
@@ -190,7 +190,7 @@ export default function Demo() {
       id: "tuesday",
       date: "2026-10-27T14:20:00+08:00",
       label: t("secondDate"),
-      keys: ["weekend", "coffee", "coffeeImage"],
+      keys: ["coffee", "coffeeImage"],
     },
     {
       id: "wednesday",
@@ -200,7 +200,6 @@ export default function Demo() {
     },
     { id: "live", label: h("today"), keys: ["welcome"] },
   ];
-  const outgoing = new Set(["weekend"]);
   const initial: DemoMessage[] = groups.flatMap((group) =>
     group.keys.map((key) => ({
       id: key,
@@ -211,7 +210,6 @@ export default function Demo() {
           : key === "introGreeting"
             ? t.markup(key, { wave: () => "" })
             : t(key),
-      outgoing: outgoing.has(key),
       ...(key === "coffeeImage"
         ? {
             photos: [
@@ -254,8 +252,8 @@ export default function Demo() {
         text: t("walkReply"),
         photos: [
           {
-            url: rooftopsImage,
-            name: t("rooftopsImage"),
+            url: alleyImage,
+            name: t("alleyImage"),
             width: 960,
             height: 716,
           },
@@ -603,11 +601,7 @@ export default function Demo() {
                         message={messages.get(key)!}
                         onSelect={select}
                         count={counts.get(key)}
-                        tail={
-                          index === group.keys.length - 1 ||
-                          outgoing.has(key) !==
-                            outgoing.has(group.keys[index + 1])
-                        }
+                        tail={index === group.keys.length - 1}
                       />
                     </li>
                   ))}
