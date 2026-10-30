@@ -36,9 +36,10 @@ export default function HomePhoneFrame({ children }: { children: ReactNode }) {
       data-home-phone-frame
       className="min-h-dvh bg-(--home-background) sm:flex sm:h-dvh sm:items-center sm:justify-center sm:overflow-clip sm:p-8"
     >
+      {/* Scale the rendered phone as one surface so Safari cannot size text separately. */}
       <div
         data-home-phone-device
-        className="relative w-full sm:aspect-[1293/2656] sm:w-(--home-frame-width) sm:shrink-0 sm:[zoom:min(1,calc((100dvh-64px)*1293/2656/430px))] sm:[--home-frame-width:430px]"
+        className="relative w-full sm:aspect-[1293/2656] sm:w-(--home-frame-width) sm:shrink-0 sm:[transform:scale(clamp(0,calc((100dvh-64px)*1293/2656/430px),1))] sm:[--home-frame-width:430px]"
       >
         <div
           ref={setScreen}

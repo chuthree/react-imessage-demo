@@ -256,7 +256,8 @@ function AnimatedReplySurface({
     const origin = surfaces.origins.get(id) ?? target;
     const device = element.closest("[data-home-phone-device]");
     const zoom = device
-      ? Number(getComputedStyle(device).getPropertyValue("zoom")) || 1
+      ? device.getBoundingClientRect().width /
+          parseFloat(getComputedStyle(device).width) || 1
       : 1;
     const from = replyPreviewTransform(origin, target, zoom);
     let cancelled = false;
