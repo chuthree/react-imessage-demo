@@ -206,7 +206,11 @@ export default function Demo() {
       id: key,
       threadId: key,
       text:
-        key === "intro" ? t.markup(key, { demo: (chunks) => chunks }) : t(key),
+        key === "intro"
+          ? t.markup(key, { demo: (chunks) => chunks })
+          : key === "introGreeting"
+            ? t.markup(key, { wave: () => "" })
+            : t(key),
       outgoing: outgoing.has(key),
       ...(key === "coffeeImage"
         ? {

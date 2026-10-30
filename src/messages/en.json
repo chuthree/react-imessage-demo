@@ -69,7 +69,7 @@
     "github": "View the demo source on GitHub",
     "photoReply": "Got the photos!",
     "welcomeReply": "Got it 👋",
-    "introGreeting": "Hi, I’m chu3",
+    "introGreeting": "Hi, I’m chu3 <wave></wave>",
     "intro": "I built this <demo>iMessage demo</demo> with React",
     "weekend": "Can I send photos too?",
     "coffee": "Yep, I’ll send you one",

@@ -1,6 +1,7 @@
 import { Dialog } from "@base-ui/react/dialog";
 import { useTranslations } from "use-intl";
 import { useState, type ReactNode } from "react";
+import wavingHandEmoji from "../assets/waving-hand-apple.webp";
 import MessageReaction from "./MessageReaction";
 import { chatReactionIcons } from "../lib/chat/reaction";
 import MessageBubbleShape, {
@@ -138,7 +139,19 @@ export function MessageRow({
               {h(message.outgoing ? "you" : "assistant")}
             </span>
             <FittedMessageText>
-              {message.id === "intro"
+              {message.id === "introGreeting"
+                ? d.rich("introGreeting", {
+                    wave: () => (
+                      <img
+                        src={wavingHandEmoji}
+                        alt=""
+                        width={17}
+                        height={17}
+                        className="relative -top-0.5 inline size-4.25"
+                      />
+                    ),
+                  })
+                : message.id === "intro"
                 ? d.rich("intro", {
                     demo: (chunks) => (
                       <a
