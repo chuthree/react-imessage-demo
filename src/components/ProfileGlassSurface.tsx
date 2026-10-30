@@ -41,6 +41,7 @@ export default function ProfileGlassSurface({
   materialProgress = 1,
   animateHeight = false,
   heightSnapKey,
+  composerPart,
 }: {
   children: ReactNode;
   className?: string;
@@ -51,6 +52,7 @@ export default function ProfileGlassSurface({
   materialProgress?: number;
   animateHeight?: boolean;
   heightSnapKey?: number;
+  composerPart?: "attachment" | "input";
 }) {
   const reduceMotion = useReducedMotion();
   const rimClipId = useId();
@@ -174,6 +176,7 @@ export default function ProfileGlassSurface({
       )}
       <span
         ref={contentRef}
+        data-profile-glass-content
         className={cn(
           "z-10 block",
           animateHeight ? "absolute inset-x-0 bottom-0" : "relative",
@@ -192,6 +195,7 @@ export default function ProfileGlassSurface({
         ref={surfaceRef}
         data-profile-glass-radius={radius}
         data-profile-glass-smoothing={smoothing}
+        data-composer-glass={composerPart}
         initial={false}
         animate={{
           scale: 1,
@@ -267,6 +271,13 @@ export default function ProfileGlassSurface({
           clipId={rimClipId}
           capFraction={capFraction}
         />
+        {composerPart && (
+          <ProfileGlassOutline
+            fusion
+            clipId={`${rimClipId}-fusion`}
+            capFraction={capFraction}
+          />
+        )}
       </motion.div>
     </>
   );

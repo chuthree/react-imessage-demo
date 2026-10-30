@@ -101,6 +101,7 @@ export default function ComposerAttachments({
 
   return (
     <motion.div
+      data-composer-attachment-expanded={open || frame > 0 ? "" : undefined}
       inert={disabled}
       initial={false}
       tabIndex={-1}
@@ -135,6 +136,7 @@ export default function ComposerAttachments({
         className={`absolute bottom-0 left-0 ${open ? "" : "pointer-events-none"}`}
       >
         <ProfileGlassSurface
+          composerPart="attachment"
           className="block!"
           size={size}
           radius={20 + 4 * frame}

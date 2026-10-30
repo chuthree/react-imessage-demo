@@ -27,6 +27,7 @@ import { prepareChatSounds } from "../home/chatSounds";
 
 import type { MessageReplyTarget } from "../home/chat";
 import styles from "./MessageComposer.module.css";
+import useComposerFusion from "./useComposerFusion";
 
 function SendButtonSurface() {
   const surfaceRef = useRef<HTMLSpanElement>(null);
@@ -174,6 +175,7 @@ export default function MessageComposer({
   const inputId = useId();
   const [keyboardFocus, setKeyboardFocus] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  useComposerFusion(formRef);
   const showSend = message.trim().length > 0 || hasPhotos;
   const keyboardOutline = keyboardFocus
     ? "focus-visible:outline-2 focus-visible:outline-solid focus-visible:-outline-offset-2 forced-colors:focus-visible:outline-[Highlight]"
@@ -480,7 +482,7 @@ export default function MessageComposer({
       }
       onSubmit={handleSubmit}
       onFocusCapture={prepareChatSounds}
-      className={`${styles.composer} pointer-events-none relative z-30 mx-auto flex w-full max-w-100 shrink-0 items-end justify-center gap-2 px-7 select-none sm:fixed sm:inset-x-0 sm:bottom-[max(1rem,calc(var(--app-safe-bottom,env(safe-area-inset-bottom,0px))-6px))]`}
+      className={`${styles.composer} pointer-events-none relative z-30 mx-auto flex w-full max-w-100 shrink-0 items-end justify-center gap-2 px-[25px] select-none sm:fixed sm:inset-x-0 sm:bottom-[max(1rem,calc(var(--app-safe-bottom,env(safe-area-inset-bottom,0px))-6px))]`}
     >
       <p id={`${inputId}-help`} className="sr-only">
         {hasPhotos
@@ -509,7 +511,7 @@ export default function MessageComposer({
       />
       <div className={styles.stage}>
         <div
-          className={`${styles.controls} relative flex w-full min-w-0 items-end gap-2`}
+          className={`${styles.controls} relative flex w-full min-w-0 items-end gap-2.5`}
         >
           <ComposerAttachments
             disabled={closingKeyboard}
@@ -521,6 +523,7 @@ export default function MessageComposer({
             className={`${styles.capsule} pointer-events-none flex min-w-0 flex-1 justify-center`}
           >
             <ProfileGlassSurface
+              composerPart="input"
               className="pointer-events-none w-full origin-center"
               smoothing={0}
               animateHeight

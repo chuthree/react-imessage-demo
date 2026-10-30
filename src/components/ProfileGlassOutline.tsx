@@ -55,12 +55,14 @@ export default function ProfileGlassOutline({
   clipId: rimClipId,
   capFraction = 0.5,
   radius,
+  fusion = false,
 }: {
   path?: string | MotionValue<string>;
   viewBox?: string | MotionValue<string>;
   clipId: string;
   capFraction?: number | MotionValue<number>;
   radius?: number;
+  fusion?: boolean;
 }) {
   const Shape = radius === undefined ? motion.path : motion.rect;
   const geometry =
@@ -96,8 +98,10 @@ export default function ProfileGlassOutline({
   return (
     <motion.svg
       data-profile-glass-outline
+      data-composer-fusion-outline={fusion ? "" : undefined}
       data-profile-glass-native-outline={radius === undefined ? undefined : ""}
       style={{
+        display: fusion ? "none" : undefined,
         filter: `brightness(var(--glass-press-brightness, ${glassRestingBrightness})) blur(var(--composer-reveal-blur, 0px))`,
       }}
       aria-hidden="true"
@@ -107,8 +111,29 @@ export default function ProfileGlassOutline({
       className="pointer-events-none absolute -inset-px z-40 h-[calc(100%+2px)] w-[calc(100%+2px)] overflow-visible"
     >
       <defs>
-        <mask id={borderMaskId} style={{ maskType: "luminance" }}>
-          <rect x="-10%" y="-10%" width="120%" height="120%" fill="#fff" />
+        {fusion && (
+          <clipPath id={`${rimClipId}-material`} clipPathUnits="userSpaceOnUse">
+            <path
+              data-composer-material-clip
+              clipRule="evenodd"
+              clipPath={`url(#${rimClipId})`}
+            />
+          </clipPath>
+        )}
+        <mask
+          id={borderMaskId}
+          maskUnits={fusion ? "userSpaceOnUse" : undefined}
+          x={fusion ? -1 : undefined}
+          y={fusion ? -1 : undefined}
+          style={{ maskType: "luminance" }}
+        >
+          <rect
+            x={fusion ? -1 : "-10%"}
+            y={fusion ? -1 : "-10%"}
+            width="120%"
+            height="120%"
+            fill="#fff"
+          />
           <Shape
             data-profile-glass-border-mask
             {...geometry}
@@ -123,7 +148,14 @@ export default function ProfileGlassOutline({
             suppressHydrationWarning
           />
         </clipPath>
-        <linearGradient id={borderGradientId} x1="0" y1="0" x2="0" y2="1">
+        <linearGradient
+          gradientUnits={fusion ? "userSpaceOnUse" : undefined}
+          id={borderGradientId}
+          x1="0"
+          y1="0"
+          x2="0"
+          y2="1"
+        >
           {dark ? (
             darkEdgeStops.map(({ offset, end, shadow }, index) => (
               <EdgeStop
@@ -177,7 +209,14 @@ export default function ProfileGlassOutline({
             </>
           )}
         </linearGradient>
-        <linearGradient id={rimGradientId} x1="0" y1="0" x2="0" y2="1">
+        <linearGradient
+          gradientUnits={fusion ? "userSpaceOnUse" : undefined}
+          id={rimGradientId}
+          x1="0"
+          y1="0"
+          x2="0"
+          y2="1"
+        >
           {dark ? (
             darkEdgeStops.map(({ offset, end, highlight }, index) => (
               <EdgeStop
@@ -227,6 +266,7 @@ export default function ProfileGlassOutline({
         fill="none"
         stroke={`url(#${rimGradientId})`}
         strokeWidth={1.5}
+        strokeLinejoin={fusion ? "round" : undefined}
         clipPath={`url(#${rimClipId})`}
         style={{
           ...geometry.style,
@@ -241,6 +281,7 @@ export default function ProfileGlassOutline({
         fill="none"
         stroke={`url(#${borderGradientId})`}
         strokeWidth={0.5}
+        strokeLinejoin={fusion ? "round" : undefined}
       />
     </motion.svg>
   );
