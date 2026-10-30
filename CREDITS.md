@@ -1,6 +1,6 @@
 # Credits
 
-Original code, documentation, and website icons are licensed under [MIT](LICENSE). The other assets listed below, including their appearances in `.github/assets/preview-*.png` and `public/og.png`, are excluded from MIT. Third-party code retains its own licenses.
+Original code, documentation, and website icons are licensed under [MIT](LICENSE). The other assets listed below, including their appearances in `.github/assets/preview-*.webp` and `public/og.png`, are excluded from MIT. Third-party code retains its own licenses.
 
 - Device frame, side buttons, and status bar: Apple developer assets and device screenshots, compiled into `src/home/phoneImages.json`.
 - Clock glyphs and layout: exported from system fonts into `public/phone-clock/*.json`. No font files are included.

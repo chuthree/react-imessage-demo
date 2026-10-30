@@ -16,8 +16,8 @@
 
 <a href="https://imessage-demo.chu3.top/">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/preview-dark.png" />
-    <img src=".github/assets/preview-light.png" alt="iMessage demo with photos, threaded replies and reactions" width="1200" />
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/preview-dark.webp" />
+    <img src=".github/assets/preview-light.webp" alt="iMessage demo with photos, threaded replies and reactions" width="1200" />
   </picture>
 </a>
 
