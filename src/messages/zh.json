@@ -50,8 +50,6 @@
     "retryNotDelivered": "重试发送尚未送达的消息",
     "readByAI": "chu3 已读这条消息",
     "sentToAI": "消息已发送给 chu3",
-    "today": "今天",
-    "yesterday": "昨天",
     "reactions": {
       "like": "点赞",
       "dislike": "不赞同",
@@ -83,9 +81,6 @@
     "coffeeAnswer": "好喝，这包豆子喝完还想回购",
     "coffeeImage": "黑白照片：木桌上的手冲咖啡滤杯、电子秤、手机和白色杯子",
     "alleyImage": "砖墙旁的石板路上，一个红色交通锥",
-    "dogImage": "一只黑狗走在树荫下的公园步道上",
-    "firstDate": "2025年10月15日",
-    "secondDate": "10月27日 周二",
-    "thirdDate": "10月28日 周三"
+    "dogImage": "一只黑狗走在树荫下的公园步道上"
   }
 }

@@ -2,7 +2,7 @@ import coffeeImage from "../assets/demo-coffee.webp";
 import alleyImage from "../assets/demo-alley.webp";
 import dogImage from "../assets/demo-dog.webp";
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useFormatter, useLocale, useTranslations } from "use-intl";
+import { useTranslations } from "use-intl";
 import { useReducedMotion } from "framer-motion";
 import ProfileHeader from "./ProfileHeader";
 import ReplyPreview, {
@@ -173,32 +173,45 @@ function LiveChat({
   );
 }
 
+function demoPhotoTimes(now: Date): { coffee: number; walk: number } {
+  // Use the latest completed Wednesday, keeping both sample conversations in the past.
+  const wednesday = new Date(now);
+  const daysBack = (now.getDay() - 3 + 7) % 7 || 7;
+  wednesday.setDate(wednesday.getDate() - daysBack);
+  wednesday.setHours(18, 6, 0, 0);
+  const tuesday = new Date(wednesday);
+  tuesday.setDate(tuesday.getDate() - 1);
+  tuesday.setHours(14, 20, 0, 0);
+  return { coffee: tuesday.getTime(), walk: wednesday.getTime() };
+}
+
 export default function Demo() {
   const t = useTranslations("Demo");
   const h = useTranslations("HomeChat");
   const c = useTranslations("Conversation");
-  const format = useFormatter();
-  const locale = useLocale();
+  const [openedAt] = useState(() => Date.now());
+  // Freeze demo dates for this visit so they do not move during a conversation.
+  const [photoTimes] = useState(() => demoPhotoTimes(new Date(openedAt)));
   const groups = [
     {
-      id: "monday",
-      date: "2025-10-15T09:41:00+08:00",
-      label: t("firstDate"),
+      id: "intro",
+      // Fixed development date, intentionally shown at 09:41 in the viewer’s locale.
+      sentAt: new Date(2026, 9, 15, 9, 41).getTime(),
       keys: ["introGreeting", "intro"],
     },
     {
-      id: "tuesday",
-      date: "2026-10-27T14:20:00+08:00",
-      label: t("secondDate"),
+      id: "coffee",
+      sentAt: photoTimes.coffee,
+      weekdayOnly: true,
       keys: ["coffee", "coffeeImage"],
     },
     {
-      id: "wednesday",
-      date: "2026-10-28T18:06:00+08:00",
-      label: t("thirdDate"),
+      id: "walk",
+      sentAt: photoTimes.walk,
+      weekdayOnly: true,
       keys: ["walk"],
     },
-    { id: "live", label: h("today"), keys: ["welcome"] },
+    { id: "live", keys: ["welcome"] },
   ];
   const initial: DemoMessage[] = groups.flatMap((group) =>
     group.keys.map((key) => ({
@@ -226,7 +239,7 @@ export default function Demo() {
   );
   const examples: { groupId: string; turn: ChatTurn }[] = [
     {
-      groupId: "tuesday",
+      groupId: "coffee",
       turn: {
         id: "example-coffee",
         text: t("coffeeReply"),
@@ -241,12 +254,12 @@ export default function Demo() {
         reaction: { type: "like", target: "text", index: 0 },
         status: "done",
         live: false,
-        sentAt: Date.parse("2026-10-27T14:22:00+08:00"),
-        readAt: Date.parse("2026-10-27T14:23:00+08:00"),
+        sentAt: photoTimes.coffee + 2 * 60000,
+        readAt: photoTimes.coffee + 3 * 60000,
       },
     },
     {
-      groupId: "wednesday",
+      groupId: "walk",
       turn: {
         id: "example-walk",
         text: t("walkReply"),
@@ -274,8 +287,8 @@ export default function Demo() {
         reaction: { type: "love", target: "photo", index: 1 },
         status: "done",
         live: false,
-        sentAt: Date.parse("2026-10-28T18:08:00+08:00"),
-        readAt: Date.parse("2026-10-28T18:09:00+08:00"),
+        sentAt: photoTimes.walk + 2 * 60000,
+        readAt: photoTimes.walk + 3 * 60000,
       },
     },
   ];
@@ -472,25 +485,15 @@ export default function Demo() {
     group.id === "live" && turns[0] ? (
       <ChatTimestamp time={times.get(turns[0].id)!} heading />
     ) : (
-      <SharedReplySurface
-        id={`${group.id}-time`}
-        className="mx-auto w-fit max-w-full"
-      >
-        <h2 className="mx-auto h-4 w-fit max-w-full text-center text-[11px] leading-4 whitespace-nowrap text-(--message-timestamp) select-none">
-          <time dateTime={group.date}>
-            <span className="font-medium">{group.label}</span>
-            {group.date && (
-              <span className="ml-0.5">
-                {format.dateTime(new Date(group.date), {
-                  hour: locale === "zh" ? "2-digit" : "numeric",
-                  minute: "2-digit",
-                  timeZone: "Asia/Shanghai",
-                })}
-              </span>
-            )}
-          </time>
-        </h2>
-      </SharedReplySurface>
+      <ChatTimestamp
+        time={{
+          id: `${group.id}-time`,
+          turn: { sentAt: group.sentAt ?? openedAt },
+        }}
+        heading
+        showTime={group.sentAt !== undefined}
+        weekdayOnly={group.weekdayOnly}
+      />
     );
   const shownTimes = new Set<string>(
     selectedGroup ? [`${selectedGroup.id}-time`] : [],

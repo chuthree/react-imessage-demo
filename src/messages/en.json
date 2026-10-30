@@ -50,8 +50,6 @@
     "retryNotDelivered": "Retry sending the undelivered message",
     "readByAI": "chu3 has read this message",
     "sentToAI": "Message sent to chu3",
-    "today": "Today",
-    "yesterday": "Yesterday",
     "reactions": {
       "like": "Thumbs up",
       "dislike": "Thumbs down",
@@ -83,9 +81,6 @@
     "coffeeAnswer": "Really good. I’d buy these beans again",
     "coffeeImage": "Black-and-white photo of a coffee dripper, scale, phone and white cup on a wooden table",
     "alleyImage": "A red traffic cone on a stone-paved lane beside a brick wall",
-    "dogImage": "A black dog walking along a shaded park path",
-    "firstDate": "October 15, 2025",
-    "secondDate": "October 27, Tue",
-    "thirdDate": "October 28, Wed"
+    "dogImage": "A black dog walking along a shaded park path"
   }
 }

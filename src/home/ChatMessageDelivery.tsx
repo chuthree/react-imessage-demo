@@ -120,9 +120,7 @@ export default function ChatMessageDelivery({
                       hour: "2-digit",
                       minute: "2-digit",
                       hour12: false,
-                      timeZone: turn.live
-                        ? Intl.DateTimeFormat().resolvedOptions().timeZone
-                        : "Asia/Shanghai",
+                      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     }),
                     timeText: (chunks) => (
                       <span className="font-normal">{chunks}</span>
