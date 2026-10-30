@@ -104,6 +104,9 @@ function LiveChat({
       following.current = true;
       focusScroll.current?.();
       if (flight.current) return;
+      // Safari rounds zoomed scroll coordinates; replaying a settled scroll can move it backwards.
+      const destination = Math.min(scroller.bottom(), scroller.end());
+      if (Math.abs(destination - scroller.top()) <= 2) return;
       if (reduced) scroller.scroll(scroller.bottom());
       else
         focusScroll.current = animateChatScroll(

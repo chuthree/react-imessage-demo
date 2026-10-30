@@ -508,6 +508,9 @@ export default function ReplyPreview({
     following.current = true;
     if (flight.current) return;
     const scroller = chatScroller(content);
+    // Keep repeated composer focus from replaying a settled, rounded scroll in Safari.
+    const destination = Math.min(scroller.bottom(), scroller.end());
+    if (Math.abs(destination - scroller.top()) <= 2) return;
     if (reduceMotion) scroller.scroll(scroller.bottom());
     else
       focusScroll.current = animateChatScroll(
