@@ -560,6 +560,11 @@ export default function MessageComposer({
                     )
                       onInputFocus?.();
                   }}
+                  onPointerUp={() => {
+                    // Start after touchstart, which cancels scrolling when a gesture begins.
+                    if (!matchMedia("(min-width: 640px)").matches)
+                      onInputFocus?.();
+                  }}
                   onTouchEnd={(event) => {
                     if (blockInputFocus.current) event.preventDefault();
                   }}

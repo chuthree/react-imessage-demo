@@ -637,11 +637,7 @@ export default function ReplyPreview({
       replyTarget={open ? replyTarget : undefined}
       busy={busy}
       onInputFocus={focusComposer}
-      onBeforeInputFocus={() => {
-        if (isInputAtBottom()) return true;
-        focusComposer();
-        return false;
-      }}
+      onBeforeInputFocus={isInputAtBottom}
       onSend={(text, origin, photos) => {
         const previewOrigin =
           open && origin && contentRef.current ? { rect: origin } : null;
