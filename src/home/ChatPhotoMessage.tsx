@@ -201,7 +201,7 @@ export default function ChatPhotoMessage({
             </div>
             {reaction && reactionIndex === index && (
               <MessageReaction
-                photo
+                photo={stacked}
                 key={reaction.type}
                 icon={chatReactionIcons[reaction.type]}
                 label={reactions(reaction.type)}
