@@ -79,6 +79,8 @@ export function MessageRow({
   const h = useTranslations("HomeChat");
   const { inPreview } = useReplyPreview();
   const d = useTranslations("Demo");
+  const canOpenReply = !inPreview && message.threadId !== message.id;
+  const Surface = canOpenReply ? Dialog.Trigger : "div";
   const reaction =
     message.outgoing &&
     turn?.reaction?.target === (message.photos?.length ? "photo" : "text")
@@ -121,15 +123,33 @@ export function MessageRow({
             animateReaction={animateReaction}
           />
         ) : (
-          <div
+          <Surface
             tabIndex={0}
+            data-reply-thread={canOpenReply ? message.threadId : undefined}
+            onClick={
+              canOpenReply
+                ? (event) => {
+                    const selection = event.currentTarget.ownerDocument.getSelection();
+                    if (event.detail > 0 && selection && !selection.isCollapsed) {
+                      for (let index = 0; index < selection.rangeCount; index++) {
+                        if (selection.getRangeAt(index).intersectsNode(event.currentTarget)) {
+                          if ("preventBaseUIHandler" in event)
+                            event.preventBaseUIHandler();
+                          return;
+                        }
+                      }
+                    }
+                    onSelect(message);
+                  }
+                : undefined
+            }
             data-message-id={message.id}
             data-message-selection={message.outgoing ? "outgoing" : "incoming"}
             data-chat-outgoing={
               message.outgoing && !turn?.photos?.length ? turn?.id : undefined
             }
             data-outgoing-message={message.outgoing ? "" : undefined}
-            className={`${messageBubbleFrame} pointer-events-auto flex w-fit ${message.outgoing ? "max-w-[73.5%] self-end text-white" : "min-h-[42px] max-w-[78%] self-start text-(--message-foreground)"} items-center justify-center rounded-[20px] px-3.5 py-[9px] text-[17px] leading-tight [overflow-wrap:anywhere] whitespace-pre-wrap focus-visible:outline-2 focus-visible:outline-[#007aff]`}
+            className={`${messageBubbleFrame} pointer-events-auto flex w-fit ${canOpenReply ? "cursor-pointer active:brightness-95" : ""} ${message.outgoing ? "max-w-[73.5%] self-end text-white" : "min-h-[42px] max-w-[78%] self-start text-(--message-foreground)"} items-center justify-center rounded-[20px] px-3.5 py-[9px] text-left text-[17px] leading-tight [overflow-wrap:anywhere] whitespace-pre-wrap focus-visible:outline-2 focus-visible:outline-[#007aff]`}
           >
             <MessageBubbleShape
               outgoing={Boolean(message.outgoing)}
@@ -177,7 +197,7 @@ export function MessageRow({
                 animate={animateReaction}
               />
             )}
-          </div>
+          </Surface>
         )}
         {!message.photos?.length && receipt}
       </SharedReplySurface>
