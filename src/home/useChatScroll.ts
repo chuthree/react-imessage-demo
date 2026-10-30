@@ -87,11 +87,6 @@ export default function useChatScroll(
       };
       const releaseHeight = () => {
         host.style.removeProperty("height");
-        releaseClip();
-      };
-      const releaseClip = () => {
-        host.style.removeProperty("overflow");
-        host.style.removeProperty("overflow-clip-margin");
       };
       const stopLayout = () => {
         heightAnimation?.stop();
@@ -163,17 +158,12 @@ export default function useChatScroll(
             ...spring,
             onComplete: () => {
               heightAnimation = undefined;
-              releaseClip();
             },
           });
         }
         // Keep the measured range between updates too: otherwise a
         // shrinking DOM can clamp scrollTop before the observer runs.
         host.style.height = `${height.get()}px`;
-        if (heightAnimation) {
-          host.style.overflow = "clip";
-          host.style.overflowClipMargin = "40px";
-        } else releaseClip();
         previousHeight = nextHeight;
         previousWidth = nextWidth;
         previouslyActive = active;
