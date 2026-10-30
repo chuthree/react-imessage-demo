@@ -132,6 +132,14 @@ export default function MessageReplyGesture({
       <div
         className={`${styles.scope} contents`}
         onDragStart={(event) => event.preventDefault()}
+        onMouseDown={(event) => {
+          // Prevent native focus from scrolling a clipped message into view before the menu opens.
+          if (
+            (event.button === 2 || (event.button === 0 && event.ctrlKey)) &&
+            findMessage(event.target as Element)
+          )
+            event.preventDefault();
+        }}
         onContextMenu={(event) => {
           cancelHold();
           if ((event.target as Element).closest("[data-message-actions]"))

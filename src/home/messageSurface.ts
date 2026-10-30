@@ -70,6 +70,8 @@ export function liftMessagePhoto(source: HTMLElement, host: HTMLElement) {
     });
   };
   update();
+  // Let the menu take focus without reparenting a focused photo and scrolling its old container.
+  if (document.activeElement === source) source.blur();
   move(layer, null);
   return {
     update,

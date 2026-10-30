@@ -558,7 +558,7 @@ export default function MessageContextMenu({
         >
           <FloatingFocusManager
             context={context}
-            disabled={!open || locked}
+            disabled={!message || locked}
             initialFocus={panelRef}
             modal
             outsideElementsInert
