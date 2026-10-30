@@ -138,9 +138,9 @@ export default function MessageContextMenu({
     action?.();
   });
 
-  // Keep the returning surface above reply connectors until its transform is restored.
+  // Photos restore sibling overlap; other surfaces stay above reply connectors.
   const surfaceZIndex = useEffectEvent((original: string) =>
-    open ? "21" : original || "1",
+    open ? "21" : original,
   );
 
   useLayoutEffect(() => {
@@ -417,17 +417,21 @@ export default function MessageContextMenu({
         p === 0
           ? original.filter
           : `${original.filter === "none" ? "" : original.filter} drop-shadow(0 ${8 * p}px ${16 * p}px rgb(0 0 0 / ${0.16 * p}))`.trim();
-      photoSurface?.setZIndex(surfaceZIndex(original.zIndex));
+      const zIndex = surfaceZIndex(
+        photoSurface ? original.zIndex : original.zIndex || "1",
+      );
+      photoSurface?.setZIndex(zIndex);
       // Return below the scrim as soon as dismissal starts, while the
       // same live surface continues animating back to its resting pose.
-      source.style.zIndex = surfaceZIndex(original.zIndex);
+      source.style.zIndex = zIndex;
       source.style.position = position;
       if (closing.current) {
         returned = true;
       }
       positionFrame = requestAnimationFrame(updatePosition);
     };
-    updatePosition();
+    // Wait for setOpen(true) to commit before reading it through surfaceZIndex.
+    positionFrame = requestAnimationFrame(updatePosition);
     return () => {
       cancelAnimationFrame(positionFrame);
       observer.disconnect();
