@@ -33,8 +33,7 @@ export default function MessageBubbleShape({
       data-bubble-tail={tail ? "" : undefined}
       data-bubble-ready={path ? "" : undefined}
       suppressHydrationWarning
-      // Keep the measured path fitted while ResizeObserver catches up
-      // with a content change, before layout projection scales the SVG.
+      // Fit the previous path while ResizeObserver catches up with content changes.
       viewBox={path ? `0 0 ${width} ${height}` : undefined}
       preserveAspectRatio="none"
       aria-hidden="true"
@@ -46,8 +45,7 @@ export default function MessageBubbleShape({
       )}
       style={
         {
-          // Use the content-driven layout height rather than an SVG
-          // percentage height inside an auto-height, min-height box.
+          // Percentage SVG heights are unreliable in an auto-height container.
           height: height || undefined,
           "--bubble-focus-filter": `url(#${focusId})`,
         } as CSSProperties
@@ -122,8 +120,7 @@ export default function MessageBubbleShape({
             }
           />
           {tail && (
-            // SSR has no dimensions; the minimum contour
-            // supplies its tail until the measured path is ready.
+            // Render the fallback tail until the bubble dimensions are measured.
             <svg
               x="0"
               y="100%"

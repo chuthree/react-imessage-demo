@@ -1,5 +1,4 @@
-/* Home tokens live on html so reply dialogs rendered in portals share them.
-   Other pages keep their own palette; home drawers share the elevated tokens. */
+/* Define theme tokens on html so portaled dialogs inherit them. */
 html:has([data-home-phone-frame]) {
   color-scheme: light;
   --home-background: #fff;
@@ -102,8 +101,7 @@ body:has([data-home-phone-frame]) {
   [data-home-native-scroll] [data-chat-composer-slot] {
     position: fixed;
     inset-inline: 0;
-    /* Leave the viewport edge to the document, not a fixed container:
-           Safari otherwise extends the container's color behind its toolbar. */
+    /* Keep a gap so Safari samples the document color behind its toolbar. */
     bottom: max(1rem, calc(env(safe-area-inset-bottom, 0px) - 6px));
   }
 

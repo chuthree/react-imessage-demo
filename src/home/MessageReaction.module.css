@@ -1,5 +1,3 @@
-/* Approximate the supplied 2026-10-25 clip: body leads, icon follows,
-   then the two connector dots settle independently over about 450ms. */
 .reaction[data-animate] .body {
   transform-origin: 50% 85%;
   animation: bodyIn 450ms linear both;

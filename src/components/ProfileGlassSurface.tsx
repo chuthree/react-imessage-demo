@@ -31,7 +31,6 @@ import ProfileGlassOutline from "./ProfileGlassOutline";
 const subscribe = () => () => {};
 const getServerSnapshot = () => false;
 
-// The profile capsule and conversation controls share one glass material.
 export default function ProfileGlassSurface({
   children,
   className,
@@ -82,7 +81,6 @@ export default function ProfileGlassSurface({
       animation = animate(heightValue, contentSize.height, {
         duration: reduceMotion ? 0 : 0.24,
         ease: [0.23, 1, 0.32, 1],
-        // Geometry and refraction share the same state update.
         onUpdate: setAnimatedHeight,
       });
     });
@@ -106,9 +104,7 @@ export default function ProfileGlassSurface({
     width && height ? generateClipPath(width, height, corners) : undefined;
   const borderPath =
     width && height ? generatePath(width, height, corners) : undefined;
-  // Limit lighting changes to the rounded caps; straight sides stay uniform.
-  // Animated height starts at 40 before width is measured. Keep the initial
-  // cap fallback until both dimensions exist, rather than collapsing to zero.
+  // Keep highlights on the rounded caps; use a fallback until both dimensions are measured.
   const capFraction =
     width && height
       ? Math.min(
@@ -118,7 +114,6 @@ export default function ProfileGlassSurface({
       : 0.5;
   const [optics, canRefract] = useGlassOptics();
   const { resolvedTheme } = useTheme();
-  // The provider updates theme changes; hydration must match the server's veil.
   const dark = useSyncExternalStore(
     subscribe,
     () => resolvedTheme === "dark",
@@ -228,15 +223,13 @@ export default function ProfileGlassSurface({
             frost:
               profileOptics.frost * (1 - density) +
               (canRefract ? 10 : 24) * density,
-            // A dark veil attenuates bright content behind the lens,
-            // while the foreground and edge highlights stay clear.
+            // Dim the backdrop without darkening foreground content or edge highlights.
             ...(dark ? { brightness: -0.32 } : {}),
           }}
           style={{
-            // Keep the filter on the backdrop owner, not its ancestor.
+            // Apply brightness to the backdrop itself so foreground content stays unaffected.
             filter: `brightness(var(--glass-press-brightness, ${glassRestingBrightness})) blur(var(--composer-reveal-blur, 0px))`,
-            // Circular capsules follow the live CSS box, including
-            // the first animation frame before measurement catches up.
+            // Use CSS geometry until the measured path catches up with resizing.
             borderRadius:
               smoothing === 0 ? radius : "var(--profile-glass-radius)",
             clipPath:

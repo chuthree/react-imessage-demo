@@ -183,8 +183,7 @@ export default function MessageComposer({
     const viewport = form?.closest<HTMLElement>("[data-contained-viewport]");
     if (!form || !viewport) return;
     const scroller = chatScroller(form);
-    // Waiting for a reply still allows editing. Only an active scroll
-    // animation owns positioning; request state must not disable following.
+    // Follow composer resizing unless a send animation already controls scrolling.
     const atBottom =
       !scroller.animating() && scroller.bottom() - scroller.top() < 2;
     viewport.style.setProperty("--home-composer-height", `${height}px`);
@@ -490,7 +489,7 @@ export default function MessageComposer({
                         key={photo.url}
                         className="relative h-[156px] shrink-0 rounded-xl"
                       >
-                        {/* GIFs retain the original preview; the model receives the still. */}
+                        {/* Keep GIF previews animated unless reduced motion is enabled. */}
                         <img
                           src={
                             photo.compressed?.animationId && !reducedMotion

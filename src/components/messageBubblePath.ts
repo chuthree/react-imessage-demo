@@ -6,9 +6,7 @@ export default function bubblePath(
   radius: number,
   tail: boolean,
 ) {
-  // IMG_1992: two fitted cubics per corner, at 3 image pixels per CSS px.
-  // Interpolate the measured single-line and multiline profiles, then fit
-  // their height without forcing smoothing into a half-height radius.
+  // Interpolate the measured single-line and multiline contours to preserve their corner shapes.
   const radiusScale = Math.min(radius / 20, height / 40);
   const compact = width < 64 * radiusScale;
   const q = compact

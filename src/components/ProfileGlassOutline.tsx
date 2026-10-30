@@ -6,8 +6,7 @@ import { glassRestingBrightness } from "./capsuleMotion";
 const subscribe = () => () => {};
 const getServerSnapshot = () => false;
 
-// Native dark glass has a narrow outer shadow at the sides and a separate
-// inner highlight at the poles. Interpolating black into white muddies both.
+// Keep the side shadows and inner highlights separate to avoid a gray rim.
 const darkEdgeStops = Array.from({ length: 17 }, (_, index) => {
   const offset = index / 16;
   return {
@@ -63,7 +62,6 @@ export default function ProfileGlassOutline({
   capFraction?: number | MotionValue<number>;
   radius?: number;
 }) {
-  // Native rounded rectangles follow CSS resizing without a measured path.
   const Shape = radius === undefined ? motion.path : motion.rect;
   const geometry =
     radius === undefined

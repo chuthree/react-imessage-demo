@@ -27,8 +27,7 @@ import {
   glassPressMotion,
 } from "./capsuleMotion";
 
-// One progress drives geometry and content; the material receives that geometry
-// directly rather than chasing DOM animation through ResizeObserver.
+// Drive content and glass geometry together to avoid ResizeObserver lag.
 export default function ComposerAttachments({
   onCamera,
   onPhotos,

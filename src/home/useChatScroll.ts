@@ -4,7 +4,6 @@ import { chatScroller } from "./chatSendAnimation";
 
 const spring = { type: "spring", duration: 0.4, bounce: 0 } as const;
 
-// Both stages provide intrinsic content inside a separate animated height host.
 export default function useChatScroll(
   listRef: RefObject<HTMLElement | null>,
   following: RefObject<boolean>,
@@ -24,8 +23,7 @@ export default function useChatScroll(
     options.current = { enabled, reduced };
     const list = listRef.current;
     const scroller = list ? chatScroller(list) : null;
-    // Hydration switches mobile document scrolling to the desktop phone's
-    // inner scroller without replacing the list DOM node.
+    // The scroll container can change at the desktop breakpoint without replacing the list.
     if (
       controller.current?.list !== list ||
       controller.current?.source !== scroller?.source
@@ -52,8 +50,7 @@ export default function useChatScroll(
       let lastScrollTop = scroller.top();
       const followBottom = () => {
         scroller.scroll(bottom());
-        // scroll events are asynchronous. Remember our own write so a
-        // later height update cannot reinterpret it as a user gesture.
+        // Track programmatic scrolling so delayed scroll events are not mistaken for user input.
         lastScrollTop = scroller.top();
       };
       const syncFollowing = () => {
@@ -67,14 +64,13 @@ export default function useChatScroll(
           scroller.animating()
         )
           return;
-        // Observe the user's position; never snap a manual scroll.
-        // One pixel only accounts for rounded browser scroll metrics.
+        // Allow one pixel for rounded browser scroll metrics.
         following.current = delta > 0 && scroller.end() - top <= 1;
       };
       scroller.source.addEventListener("scroll", syncFollowing, {
         passive: true,
       });
-      // Layout pixels exclude phone zoom, shared transforms and scroll jelly.
+      // Measure layout offsets without zoom or animation transforms.
       const layoutTop = (element: HTMLElement) => {
         let top = 0;
         for (
@@ -98,8 +94,7 @@ export default function useChatScroll(
       };
       const unsubscribe = height.on("change", (value) => {
         host.style.height = `${Math.max(0, value)}px`;
-        // Height and bottom following share a clock, rather than a
-        // second smooth-scroll controller chasing a moving destination.
+        // Update height and scroll position together to avoid competing animations.
         if (
           following.current &&
           options.current.enabled() &&
@@ -161,8 +156,7 @@ export default function useChatScroll(
             },
           });
         }
-        // Keep the measured range between updates too: otherwise a
-        // shrinking DOM can clamp scrollTop before the observer runs.
+        // Preserve host height so shrinking content cannot clamp scrollTop before the observer runs.
         host.style.height = `${height.get()}px`;
         previousHeight = nextHeight;
         previousWidth = nextWidth;
@@ -184,8 +178,7 @@ export default function useChatScroll(
         },
       };
     }
-    // Sending/preview effects establish ownership before this measurement.
-    // The observer also catches image, font and nested component changes.
+    // Defer measurement until send and preview effects have established scroll ownership.
     const current = controller.current;
     queueMicrotask(() => current?.measure());
   });

@@ -60,8 +60,7 @@ function isPreviewBackground(target: EventTarget, viewport: EventTarget) {
 }
 
 function surfaceBounds(element: HTMLElement) {
-  // Outgoing shared surfaces include a full-width row and delivery receipts.
-  // Anchor both views to the visible bubble, not that row's left edge.
+  // Anchor transitions to the visible bubble; the shared row may span the full width.
   return (
     element.querySelector<HTMLElement>(
       '[data-chat-outgoing], [data-message-selection="outgoing"], [data-chat-photo-group], [data-outgoing-message]',
@@ -109,8 +108,7 @@ export function useReplyPreview() {
   return context;
 }
 
-// React owns each image's slot. Only the playing image moves between the slots,
-// and it returns before either React tree is removed.
+// Move the original GIF between slots to preserve playback; restore it before either tree unmounts.
 export function useSharedReplyImage(
   messageId: string,
   index: number,
@@ -208,8 +206,7 @@ function AnimatedReplySurface({
   const { inPreview, mounted, reduceMotion, surfaces, activeSurfaceIds } =
     useReplyPreview();
   const elementRef = useRef<HTMLDivElement>(null);
-  // Base UI may remount popup content when a closing dialog reopens. Preserve
-  // presentation values above the portal so retargeting never restarts at origin.
+  // Preserve animation values across Base UI portal remounts so interrupted transitions resume.
   const [values] = useState(() => {
     let existing = surfaces.animations.get(id);
     if (!existing) {
@@ -276,8 +273,7 @@ function AnimatedReplySurface({
         element.style.opacity = "0";
       } else {
         transform.set(from);
-        // MotionValue writes are frame-scheduled. Set this first frame
-        // synchronously so the destination never flashes before moving.
+        // Write the first frame synchronously to prevent a flash before MotionValue updates.
         element.style.transform = from;
       }
     }
@@ -376,15 +372,13 @@ function PreparedReplyContent({
     if (!content) return;
     const prepare = () => {
       if (cancelled) return;
-      // Let the dialog commit its open state before measuring. Text-only
-      // threads must not take a synchronous shortcut through hidden layout.
+      // Wait for the open state to commit before measuring, including text-only threads.
       frame = requestAnimationFrame(() => {
         if (!cancelled) onReady(content);
       });
     };
     const images = [...content.querySelectorAll("img")];
-    // A cached source image doesn't guarantee that its new portal copy has
-    // been decoded. Keep the original visible until the copy can be painted.
+    // Decode the portal image before hiding the original, even when its URL is cached.
     const pending = images.filter(
       (image) => typeof image.decode === "function",
     );
@@ -739,16 +733,14 @@ export default function ReplyPreview({
           }
         }
         if (!nextOpen || !mounted || changingThread) {
-          // Replies can be added or resized while the preview is open.
-          // Closing needs every source's current bounds, including new surfaces.
+          // Remeasure before closing because replies may have been added or resized.
           surfaces.origins.clear();
           for (const [id, element] of surfaces.sources) {
             surfaces.origins.set(id, surfaceBounds(element));
           }
         }
         if (nextOpen && mounted && !changingThread) {
-          // Capture the last painted frame before a portal remount.
-          // A MotionValue may already be ahead of that rendered frame.
+          // Capture the painted position; MotionValue may already be ahead of the rendered frame.
           for (const [id, element] of surfaces.previews) {
             const values = surfaces.animations.get(id);
             if (!values) continue;
@@ -792,8 +784,7 @@ export default function ReplyPreview({
         <div data-reply-preview-list style={listFadeStyle}>
           {messageGestures(children)}
         </div>
-        {/* Portals cannot render on the server; show the same composer
-                    inline until its portal container is available. */}
+        {/* Render inline until the portal container is mounted. */}
         <div
           ref={setComposerContainer}
           data-chat-composer-slot
@@ -807,8 +798,7 @@ export default function ReplyPreview({
             container={footer ?? composerContainer}
             className="contents"
           >
-            {/* Keep the input and its glass material mounted in one place.
-                        The popup stays visible as an ordinary input when closed. */}
+            {/* Keep the composer mounted across preview transitions to preserve focus and draft text. */}
             <Dialog.Popup
               onFocusCapture={(event) => {
                 if (
@@ -865,8 +855,7 @@ export default function ReplyPreview({
                       />
                       <Dialog.Viewport
                         ref={scrollRef}
-                        // Presence owns mounting; the stage's visibility
-                        // hides preparation without zeroing layout bounds.
+                        // Keep layout measurable while the stage prepares offscreen.
                         hidden={false}
                         data-reply-preview-scroll
                         onWheel={stopFollowing}

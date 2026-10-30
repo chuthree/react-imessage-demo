@@ -3,8 +3,7 @@ import { animate, useReducedMotion } from "framer-motion";
 import { useContainedViewportLocked } from "../components/ContainedViewport";
 import motion from "./replyConnectorMotion.json";
 
-// The supplied 30fps recording: hook -> curl -> loop with a descending stem.
-// Keep the loop at its measured size; only stretch the straight stem for text/photos.
+// Stretch only the straight stem to fit message height; preserve the loop geometry.
 function centerline(
   points: number[],
   anchor: number,
@@ -14,15 +13,13 @@ function centerline(
   anchor -= topBend;
   end -= topBend;
   const positions: [number, number][] = [];
-  // Only stretch the straight stem, never the bend beside a tall photo.
   let upper = points[1];
   for (let i = 2; i < points.length && Math.abs(points[i] - 16) < 0.01; i += 2)
     upper = points[i + 1];
   const lower = motion.anchor + 12;
   for (let i = 0; i < points.length; i += 2) {
     const y = points[i + 1];
-    // A continuation starts directly below the preceding reply. Shorten its
-    // waiting bend to the available height while keeping the settled loop round.
+    // Shorten the initial bend for consecutive replies without distorting the final loop.
     const shortBend = upper + anchor - motion.anchor < 2;
     const mappedY =
       shortBend && y <= motion.anchor
@@ -75,8 +72,7 @@ export default function ReplyThreadConnector({
   useLayoutEffect(() => {
     if (locked) return;
     const svg = svgRef.current;
-    // The parent li's ref attaches after child layout effects on first mount.
-    // Resolve from our own mounted SVG so the waiting hook paints immediately.
+    // Find the parent through the SVG because the parent ref is not attached yet on mount.
     const container = svg?.closest("li");
     const path = pathRef.current;
     const quote = container?.querySelector<HTMLElement>("[data-chat-quote]");
@@ -114,7 +110,7 @@ export default function ReplyThreadConnector({
       path.setAttribute("d", centerline(points, anchor, end, topBend));
     };
     const measure = () => {
-      // offset sizes are unscaled layout pixels, including inside the phone's CSS zoom.
+      // Use layout offsets to exclude the phone's CSS zoom.
       const layoutTop = (element: HTMLElement) => {
         let top = 0;
         for (

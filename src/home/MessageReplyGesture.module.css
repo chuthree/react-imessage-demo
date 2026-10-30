@@ -1,6 +1,5 @@
 @media (max-width: 639px) {
-  /* Cover the whole conversation, including notices and reply connectors
-       outside message surfaces. Text copying stays in the message menu. */
+  /* Use the message menu for copying instead of native touch selection. */
   .scope,
   .scope * {
     user-select: none;

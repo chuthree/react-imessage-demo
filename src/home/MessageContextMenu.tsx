@@ -147,8 +147,7 @@ export default function MessageContextMenu({
     const bounds =
       viewport?.getBoundingClientRect() ??
       new DOMRect(0, 0, window.innerWidth, window.innerHeight);
-    // offsetWidth rounds 393.75px to 394px even at zoom=1. Use the
-    // fractional layout width so the portal and source share exact pixels.
+    // Use fractional CSS width; offsetWidth rounding can misalign the portal and source.
     const zoom = viewport
       ? bounds.width / parseFloat(getComputedStyle(viewport).width)
       : 1;
@@ -243,8 +242,7 @@ export default function MessageContextMenu({
       attributes: true,
       attributeFilter: ["href", "src"],
     });
-    // Animate the live surface in its original layout/paint context. A cloned
-    // surface in a portal can rasterize a pixel differently at identical rects.
+    // Animate the original surface to avoid rasterization changes caused by portal clones.
     const original = {
       translate: source.style.translate,
       scale: source.style.scale,
@@ -289,9 +287,7 @@ export default function MessageContextMenu({
     let positionFrame = 0;
     let returned = false;
     let contentBottom = visibleHeight + visibleTop - top;
-    // A child cannot escape the lifted surface's transform/filter stacking
-    // context. Render only decorative reaction snapshots below the scrim;
-    // the message itself remains its original live DOM.
+    // Clone reaction decorations below the scrim; children cannot escape the raised surface's stacking context.
     const reactionLayer = document.createElement("div");
     reactionLayer.className = "pointer-events-none fixed inset-0 z-[19]";
     reactionLayer.setAttribute("aria-hidden", "true");
@@ -317,9 +313,7 @@ export default function MessageContextMenu({
         finishClose();
         return;
       }
-      // The raised endpoint stays fixed while replies continue underneath.
-      // Only the return endpoint follows the live layout (including scroll
-      // and ancestor transforms, which ResizeObserver does not report).
+      // Update the return position for scrolling and ancestor transforms, which ResizeObserver does not track.
       const liveBounds = viewport?.getBoundingClientRect() ?? bounds;
       const liveZoom = viewport
         ? liveBounds.width / parseFloat(getComputedStyle(viewport).width)
@@ -400,9 +394,7 @@ export default function MessageContextMenu({
       const bottom = (content.bottom - live.top) / liveZoom;
       if (Math.abs(bottom - contentBottom) > 0.01) {
         contentBottom = bottom;
-        // Receipts can appear or disappear while AI replies arrive.
-        // Keep the same gap after the last visible element, including
-        // elements positioned outside the surface's layout box.
+        // Include changing receipts in the visible bounds, even when positioned outside the layout box.
         targetTop = Math.min(
           targetTop,
           maxBottom - panelHeight - gap - bottom * scale,
@@ -517,9 +509,7 @@ export default function MessageContextMenu({
   }, [locked]);
 
   const movement = reduceMotion ? 1 : frame;
-  // Keep the lens geometry and displacement map stable. Scale the whole menu
-  // from the message-side corner; fade the backdrop owner and rim separately
-  // so no fading ancestor changes the glass's backdrop root at opacity=1.
+  // Fade the backdrop and rim separately; ancestor opacity changes the glass backdrop root.
   if (!portalHost || !backdropHost) return null;
   return (
     <>

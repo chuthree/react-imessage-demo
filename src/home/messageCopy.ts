@@ -1,5 +1,4 @@
-// Copy follows the selected link or the card's destination, never its preview
-// metadata. Anchor.href resolves local paths to shareable absolute URLs.
+// Use anchor.href to copy absolute URLs rather than link preview text.
 export function messageCopyText(
   source: HTMLElement,
   selectedLink: HTMLAnchorElement | null,

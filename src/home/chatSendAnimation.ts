@@ -230,8 +230,7 @@ function animateBubble(
     visibility: "visible",
   });
   const computed = getComputedStyle(target);
-  // The real bubble's view-timeline colors change as the list scrolls.
-  // Keep the flight in sync so handing it back does not switch palettes.
+  // Sync with the bubble's scroll-dependent colors to avoid a color jump on landing.
   const syncColor = () => {
     for (const token of ["--message-blue-top", "--message-blue-bottom"])
       ghost.style.setProperty(token, computed.getPropertyValue(token));
@@ -243,10 +242,7 @@ function animateBubble(
   target.style.visibility = "hidden";
   const riseEase = cubicBezier(0.77, 0, 0.175, 1);
   const update = (progress: number) => {
-    // Read after the scroll write. The composer, list height and bottom-
-    // aligned preview can all move this target during the same send.
-    // Blend from the captured input to the live target, so the last frame
-    // and the real bubble coincide without a separate settling correction.
+    // Remeasure after scrolling so the animation lands on the bubble as layout changes.
     reshape.currentTime = progress * 480;
     settle.currentTime = progress * 480;
     const current = localRect(target.getBoundingClientRect());

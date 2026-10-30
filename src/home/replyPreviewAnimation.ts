@@ -4,9 +4,8 @@ export type ReplyBounds = Pick<DOMRect, "left" | "top">;
 
 export const settledReplyTransform = "translate3d(0px, 0px, 0px)";
 
-// Both boxes are viewport coordinates. Never add document scroll offsets:
-// dialog scroll locking can transfer scrolling between html and body.
-// Convert viewport distances back to local CSS pixels when the phone is zoomed.
+// Use viewport coordinates because dialog locking can change the scroll container.
+// Divide by phone zoom to recover local CSS pixels.
 export function replyPreviewTransform(
   origin: ReplyBounds,
   target: ReplyBounds,
@@ -14,12 +13,10 @@ export function replyPreviewTransform(
 ) {
   const x = (origin.left - target.left) / zoom;
   const y = (origin.top - target.top) / zoom;
-  // A reply moves the message, never stretches it to match a container.
-  // Decimal notation also keeps near-zero zoom deltas out of string parsing.
+  // Translate without resizing; fixed decimals avoid exponent notation in CSS transforms.
   return `translate3d(${x.toFixed(5)}px, ${y.toFixed(5)}px, 0px)`;
 }
 
-// One value owns presentation and interruption, without a parallel native timeline.
 export function animateReplyTransform(
   value: MotionValue<string>,
   target: string,

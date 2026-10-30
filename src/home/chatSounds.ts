@@ -10,7 +10,7 @@ const soundFiles = {
   "reaction-laugh": "reaction-laugh",
   "reaction-question": "reaction-question",
   "reaction-emphasis": "reaction-emphasis",
-  // No dedicated zzz sample was found; keep the generic acknowledgement.
+  // Use the generic reaction sound for zzz, which has no dedicated sample.
   "reaction-sleep": "reaction",
 } satisfies Record<
   "sent" | "received" | `reaction-${ChatReactionType}`,

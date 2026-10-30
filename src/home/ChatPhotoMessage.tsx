@@ -68,7 +68,6 @@ function ChatPhotoImage({
   );
 }
 
-// Figma supplies the surface; the supplied phone capture supplies variable card proportions.
 export default function ChatPhotoMessage({
   photos,
   tail,
@@ -104,7 +103,7 @@ export default function ChatPhotoMessage({
       );
       return { width, height: (width * photo.height) / photo.width };
     }
-    // Approximate the phone capture: similar visual area, with moderate cropping at the extremes.
+    // Keep photo areas comparable while limiting cropping for extreme aspect ratios.
     const ratio = Math.max(3 / 4, Math.min(4 / 3, photo.width / photo.height));
     return {
       width: Math.sqrt(27000 * ratio),

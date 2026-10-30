@@ -3,7 +3,6 @@ import { iconButtonClass } from "./iconButtonClass";
 
 export const closeButtonClassName = `${iconButtonClass} size-11`;
 
-// Shared appearance; each dialog, drawer or link keeps its own close behavior.
 export default function CloseButtonContent() {
   return (
     <GlassButtonContent size={44}>

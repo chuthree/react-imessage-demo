@@ -18,7 +18,7 @@ function App() {
       const saved = localStorage.getItem(localeStorageKey);
       if (saved === "zh" || saved === "en") return saved;
     } catch {
-      // Browser language still works when storage is blocked.
+      // Fall back to the browser language when storage is unavailable.
     }
     return /^zh(?:-|$)/i.test(navigator.languages[0] || navigator.language)
       ? "zh"
@@ -44,7 +44,7 @@ function App() {
             try {
               localStorage.setItem(localeStorageKey, next);
             } catch {
-              // Switching remains available for the current page.
+              // Keep the selected language for this visit if storage is unavailable.
             }
           }}
         />

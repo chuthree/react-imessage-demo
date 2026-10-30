@@ -1,4 +1,3 @@
-// Measure browser line fragments, preserving its wrapping and punctuation rules.
 export default function fitMessageText(text: HTMLElement) {
   text.style.removeProperty("width");
   if (text.querySelector("[data-fixed-message-lines]")) return;

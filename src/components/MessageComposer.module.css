@@ -75,8 +75,7 @@
     height: 40px;
   }
 
-  /* Fit the reference's contact phase: expand late in the fall, then keep
-       growing while the compressed surface recovers upward from its base. */
+  /* Delay expansion until the capsule lands, then widen during the rebound. */
   @keyframes grow {
     0% {
       width: 40px;
@@ -128,7 +127,7 @@
     }
     38% {
       translate: 0 -54px;
-      /* Match the apex drift (~39px/s), then accelerate into contact. */
+      /* Accelerate from the apex into the landing. */
       animation-timing-function: cubic-bezier(0.3, 0.055, 0.7, 0.65);
     }
     58%,
@@ -209,8 +208,7 @@
   }
 
   @keyframes attachmentIn {
-    /* Release from behind the 40px capsule when growth starts. The
-           shared controls and splitCapsule drive all motion through 100%. */
+    /* Reveal attachment controls when the capsule begins expanding. */
     0% {
       visibility: hidden;
       animation-timing-function: step-end;

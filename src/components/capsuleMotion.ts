@@ -1,4 +1,3 @@
-// Shared by glass controls and the mobile message composer.
 export const glassRestingBrightness = 1.02;
 
 export const glassPressMotion = (dark: boolean) =>

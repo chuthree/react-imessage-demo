@@ -1,5 +1,4 @@
-// Sample once per phase, never during rendering. These are pacing choices,
-// not measured human speeds; links are pasted instead of typed character by character.
+// Sample delays once per phase; URL length should not dominate simulated typing time.
 function between(min: number, max: number) {
   return min + Math.random() * (max - min);
 }
