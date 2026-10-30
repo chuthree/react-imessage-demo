@@ -162,9 +162,6 @@ export default function ChatPhotoMessage({
               aspectRatio: `${card.width} / ${card.height + bottom}`,
               transform:
                 stacked && index === 1 ? "rotate(1.11006deg)" : undefined,
-              filter: stacked
-                ? "drop-shadow(0 4px 7px rgb(0 0 0 / 0.12))"
-                : undefined,
             }}
           >
             <svg aria-hidden="true" className="absolute size-0">
@@ -187,17 +184,26 @@ export default function ChatPhotoMessage({
               </defs>
             </svg>
             <div
-              role="img"
-              aria-label={t(imageKind, { name: photo.name })}
               className="size-full"
-              style={{ clipPath: `url(#${id}-${index})` }}
+              style={{
+                filter: stacked
+                  ? "drop-shadow(0 4px 7px rgb(0 0 0 / 0.12))"
+                  : undefined,
+              }}
             >
-              <ChatPhotoImage
-                photo={photo}
-                messageId={messageId}
-                index={index}
-                className="pointer-events-none absolute inset-0 size-full object-cover"
-              />
+              <div
+                role="img"
+                aria-label={t(imageKind, { name: photo.name })}
+                className="size-full"
+                style={{ clipPath: `url(#${id}-${index})` }}
+              >
+                <ChatPhotoImage
+                  photo={photo}
+                  messageId={messageId}
+                  index={index}
+                  className="pointer-events-none absolute inset-0 size-full object-cover"
+                />
+              </div>
             </div>
             {reaction && reactionIndex === index && (
               <MessageReaction
