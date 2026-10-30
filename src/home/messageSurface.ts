@@ -76,6 +76,9 @@ export function liftMessagePhoto(source: HTMLElement, host: HTMLElement) {
     connected: () => slot.isConnected,
     setZIndex: (value: string) => {
       layer.style.zIndex = value;
+      // Restore sibling overlap as dismissal starts, while the photo animates home.
+      if (value !== "21" && source.parentElement === layer && slot.parentElement)
+        move(slot.parentElement, slot);
     },
     restore: () => {
       if (slot.parentElement) move(slot.parentElement, slot);
