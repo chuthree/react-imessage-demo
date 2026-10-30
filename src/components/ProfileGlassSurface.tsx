@@ -10,7 +10,7 @@ import { cn } from "cn";
 import { generateClipPath, generatePath } from "@lisse/core/path";
 import {
   useId,
-  useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
@@ -40,6 +40,7 @@ export default function ProfileGlassSurface({
   material = "clear",
   materialProgress = 1,
   animateHeight = false,
+  heightSnapKey,
 }: {
   children: ReactNode;
   className?: string;
@@ -49,6 +50,7 @@ export default function ProfileGlassSurface({
   material?: "clear" | "frosted";
   materialProgress?: number;
   animateHeight?: boolean;
+  heightSnapKey?: number;
 }) {
   const reduceMotion = useReducedMotion();
   const rimClipId = useId();
@@ -57,6 +59,7 @@ export default function ProfileGlassSurface({
   const measuredSize = useSurfaceSize(surfaceRef, false, !size);
   const contentSize = useSurfaceSize(contentRef, false, animateHeight);
   const heightValue = useMotionValue(40);
+  const previousHeightSnapKey = useRef(heightSnapKey);
   const [animatedHeight, setAnimatedHeight] = useState(40);
   const { width, height } =
     size ??
@@ -70,15 +73,24 @@ export default function ProfileGlassSurface({
   if (!animateHeight && animatedHeight !== restingHeight)
     setAnimatedHeight(restingHeight);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const snapHeight = previousHeightSnapKey.current !== heightSnapKey;
+    previousHeightSnapKey.current = heightSnapKey;
     if (!animateHeight) {
       heightValue.set(restingHeight);
       return;
     }
-    if (!contentSize.height || heightValue.get() === contentSize.height) return;
+    // Read committed layout so typing snaps before ResizeObserver delivers its size.
+    const nextHeight = contentRef.current?.offsetHeight ?? contentSize.height;
+    if (!nextHeight || heightValue.get() === nextHeight) return;
+    if (snapHeight) {
+      heightValue.set(nextHeight);
+      setAnimatedHeight(nextHeight);
+      return;
+    }
     let animation: { stop: () => void } | undefined;
     const startFrame = requestAnimationFrame(() => {
-      animation = animate(heightValue, contentSize.height, {
+      animation = animate(heightValue, nextHeight, {
         duration: reduceMotion ? 0 : 0.24,
         ease: [0.23, 1, 0.32, 1],
         onUpdate: setAnimatedHeight,
@@ -93,6 +105,7 @@ export default function ProfileGlassSurface({
     contentSize.height,
     restingHeight,
     heightValue,
+    heightSnapKey,
     reduceMotion,
   ]);
   const corners = {

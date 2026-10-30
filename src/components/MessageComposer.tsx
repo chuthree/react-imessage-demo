@@ -76,6 +76,7 @@ export default function MessageComposer({
   const pendingSend = useRef<(() => void) | null>(null);
   const blockInputFocus = useRef(false);
   const [closingKeyboard, setClosingKeyboard] = useState(false);
+  const [heightSnapKey, setHeightSnapKey] = useState(0);
   const [mobileHidden, setMobileHidden] = useState<boolean | null>(null);
   const visibilityInitialized = useRef(false);
   const revealed = useRef(false);
@@ -474,6 +475,7 @@ export default function MessageComposer({
               className="pointer-events-none w-full origin-center"
               smoothing={0}
               animateHeight
+              heightSnapKey={heightSnapKey}
               material={hasPhotos ? "frosted" : "clear"}
             >
               {hasPhotos && (
@@ -572,7 +574,10 @@ export default function MessageComposer({
                     if (blockInputFocus.current) event.preventDefault();
                   }}
                   onKeyDown={handleKeyDown}
-                  onChange={(event) => onChange(event.target.value)}
+                  onChange={(event) => {
+                    setHeightSnapKey((key) => key + 1);
+                    onChange(event.target.value);
+                  }}
                   placeholder={placeholder}
                   rows={1}
                   maxLength={2000}
