@@ -88,11 +88,12 @@ export default function ProfileGlassSurface({
       setAnimatedHeight(nextHeight);
       return;
     }
+    const shrinking = nextHeight < heightValue.get();
     let animation: { stop: () => void } | undefined;
     const startFrame = requestAnimationFrame(() => {
       animation = animate(heightValue, nextHeight, {
-        duration: reduceMotion ? 0 : 0.24,
-        ease: [0.23, 1, 0.32, 1],
+        duration: reduceMotion ? 0 : shrinking ? 0.28 : 0.33,
+        ease: shrinking ? [0.22, 0.5, 0.36, 1] : [0.26, 0.23, 0.31, 1],
         onUpdate: setAnimatedHeight,
       });
     });

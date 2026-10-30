@@ -288,11 +288,19 @@ export default function MessageComposer({
     };
   }, []);
   const submitting = useRef(false);
+  const photoExitAnimations = useRef<Animation[]>([]);
+  useLayoutEffect(() => {
+    if (hasPhotos) return;
+    // Release the exit fill only after React has removed the draft photo nodes.
+    photoExitAnimations.current.forEach((animation) => animation.cancel());
+    photoExitAnimations.current = [];
+  }, [hasPhotos]);
   const alive = useRef(true);
   useEffect(() => {
     alive.current = true;
     return () => {
       alive.current = false;
+      photoExitAnimations.current.forEach((animation) => animation.cancel());
     };
   }, []);
 
@@ -314,9 +322,45 @@ export default function MessageComposer({
     submitting.current = true;
     setClosingKeyboard(true);
     const send = async () => {
+      let clearedDraft = false;
       try {
         await onBeforeSend?.();
         if (!alive.current) return;
+        if (hasPhotos && !suggestion && !reducedMotion) {
+          // Hold the composer height until the draft photos have dissolved.
+          photoExitAnimations.current = Array.from(
+            formRef.current?.querySelectorAll<HTMLElement>(
+              "[data-composer-photo]",
+            ) ?? [],
+          ).map((photo) =>
+            photo.animate(
+              [
+                {
+                  transform: "scale(1)",
+                  filter: "blur(0px)",
+                  opacity: 1,
+                  easing: "cubic-bezier(0.4, 0, 1, 1)",
+                },
+                {
+                  transform: photos.length === 1 ? "scale(0.66)" : "scale(1)",
+                  filter: "blur(12px)",
+                  opacity: 0.4,
+                  offset: 0.85,
+                },
+                {
+                  transform: photos.length === 1 ? "scale(0.6)" : "scale(1)",
+                  filter: "blur(16px)",
+                  opacity: 0,
+                },
+              ],
+              { duration: 120, fill: "forwards" },
+            ),
+          );
+          await Promise.all(
+            photoExitAnimations.current.map((animation) => animation.finished),
+          ).catch(() => {});
+          if (!alive.current) return;
+        }
         const origin = formRef.current
           ?.querySelector<HTMLElement>("[data-chat-source]")
           ?.getBoundingClientRect();
@@ -330,12 +374,17 @@ export default function MessageComposer({
         ) {
           onChange("");
           setPhotos([]);
+          clearedDraft = true;
           setPhotoLimitExceeded(false);
           photoUrls.current.forEach((url) => URL.revokeObjectURL(url));
           photoUrls.current.clear();
           draftAnimations.current.clear();
         }
       } finally {
+        if (!clearedDraft) {
+          photoExitAnimations.current.forEach((animation) => animation.cancel());
+          photoExitAnimations.current = [];
+        }
         submitting.current = false;
         if (alive.current) setClosingKeyboard(false);
       }
@@ -489,6 +538,7 @@ export default function MessageComposer({
                     {photos.map((photo) => (
                       <div
                         key={photo.url}
+                        data-composer-photo
                         className="relative h-[156px] shrink-0 rounded-xl"
                       >
                         {/* Keep GIF previews animated unless reduced motion is enabled. */}
