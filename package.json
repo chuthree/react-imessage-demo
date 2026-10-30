@@ -2,6 +2,7 @@
   "name": "react-imessage-demo",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "homepage": "https://imessage-demo.chu3.top/",
   "repository": {
     "type": "git",

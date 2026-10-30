@@ -23,10 +23,20 @@
 
 ## Features
 
-- Message sending, read receipts and typing indicators, with sounds for sending, receiving and reactions
-- Hold or right-click a message to copy it, reply or view its thread
-- Choose photos or use the camera from “+”, up to two at a time; reply to individual photos and see their reactions
-- Glass surfaces and system light and dark modes; language follows your browser, with manual choices remembered via the bottom-left desktop control
+### Messages and reactions
+
+- Animated message sending, read receipts and typing indicators
+- Animated Tapback reactions, with sounds for sending, receiving and reactions
+
+### Quotes and replies
+
+- Hold or right-click to copy or reply to a message, and view replies in a thread
+- Animated reply view transitions and connectors that curl into loops, adapting to text and photo heights
+
+### Photos and appearance
+
+- Choose photos or use the camera, up to two photos at a time, with replies and reactions on individual photos
+- Glass surfaces with light and dark modes that follow your system; English and Chinese follow your browser, with manual choices remembered
 - An iPhone frame on desktop and native page scrolling on smaller screens
 
 ## Run locally
@@ -38,23 +48,8 @@ pnpm install
 pnpm dev
 ```
 
-Open the local address shown in your terminal.
+## License
 
-```sh
-pnpm build    # Type-check and build to dist/
-pnpm preview  # Preview the production build
-```
+Original code and documentation are licensed under [MIT](LICENSE).
 
-## Usage
-
-Enter adds a new line. Ctrl / Command + Enter sends the message, or use the send button.
-
-Messages and selected photos stay on the current page and are never uploaded. Refreshing the page resets them.
-
-## Disclaimer
-
-This project is for learning, interface research and non-commercial demonstrations. It is not affiliated with, endorsed or sponsored by Apple Inc.
-
-Apple-related assets and data derived from system fonts belong to Apple Inc. or their respective owners. All rights reserved.
-
-See [CREDITS](CREDITS.md) for asset sources and licenses.
+Apple assets are copyright Apple Inc. and are not covered by the MIT License. See [CREDITS](CREDITS.md) for asset sources and third-party licenses.
