@@ -8,7 +8,7 @@ Original code, documentation, and website icons are licensed under [MIT](LICENSE
 - Camera and photo picker icons (`src/assets/composer-*.webp`): interface screenshots from the [Apple Messages support page](https://support.apple.com/en-us/104969). Copy and reply icons (`public/home/message-copy.png`, `public/home/message-reply.png`) come from system interface graphics.
 - Send, receive, and reaction sounds: iOS system samples, stored in `public/home/chat/*.wav`.
 - Avatar and photos (`src/assets/home-avatar.webp`, `src/assets/demo-*.webp`): an avatar provided by the author and author-provided photos of coffee, a lane with a traffic cone, and a dog in a park. The author retains all rights. Conversations were written for the demo and are not real chat records.
-- Website icons: light and dark appearances created in Icon Composer using the project's existing speech bubble shape. These are `public/icon.svg`, `public/favicon*.png`, and `public/apple-touch-icon*.png`, and are not official Apple app icons.
+- Website icons: light and dark appearances created in Icon Composer using the project's existing speech bubble shape. These are `public/favicon*.png` and `public/apple-touch-icon*.png`, and are not official Apple app icons.
 
 Apple-related images, system graphics, emoji, sounds, and data derived from system fonts belong to Apple Inc. or their respective owners. Copyright © Apple Inc. All rights reserved. This project does not grant any additional license to these materials.
 

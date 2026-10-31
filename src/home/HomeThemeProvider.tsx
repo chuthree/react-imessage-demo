@@ -48,6 +48,12 @@ export default function HomeThemeProvider({
           ? "/apple-touch-icon-dark.png"
           : "/apple-touch-icon.png",
       );
+    document
+      .querySelector<HTMLLinkElement>('link[rel="icon"]')
+      ?.setAttribute(
+        "href",
+        resolvedTheme === "dark" ? "/favicon-dark.png" : "/favicon.png",
+      );
     if (!(window as Window & { __forceLightMode?: boolean }).__forceLightMode) {
       root.classList.toggle("dark", resolvedTheme === "dark");
     }

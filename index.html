@@ -28,14 +28,6 @@
     />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="/favicon-dark.png"
-      media="(prefers-color-scheme: dark)"
-    />
-    <link rel="icon" type="image/svg+xml" sizes="any" href="/icon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta
       name="theme-color"
@@ -54,6 +46,9 @@
       const dark = matchMedia("(prefers-color-scheme: dark)").matches;
       document.documentElement.dataset.homeTheme = dark ? "dark" : "light";
       document.documentElement.classList.toggle("dark", dark);
+      document.querySelector('link[rel="icon"]').href = dark
+        ? "/favicon-dark.png"
+        : "/favicon.png";
     </script>
   </head>
   <body>
