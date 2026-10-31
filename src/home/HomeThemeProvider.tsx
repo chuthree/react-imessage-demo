@@ -41,14 +41,6 @@ export default function HomeThemeProvider({
     const root = document.documentElement;
     root.dataset.homeTheme = resolvedTheme;
     document
-      .querySelector<HTMLLinkElement>('link[rel="apple-touch-icon"]')
-      ?.setAttribute(
-        "href",
-        resolvedTheme === "dark"
-          ? "/apple-touch-icon-dark.png"
-          : "/apple-touch-icon.png",
-      );
-    document
       .querySelector<HTMLLinkElement>('link[rel="icon"]')
       ?.setAttribute(
         "href",
