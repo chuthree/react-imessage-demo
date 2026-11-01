@@ -174,6 +174,25 @@ function animateBubble(
   });
   const source = localRect(origin.rect);
   const destination = localRect(target.getBoundingClientRect());
+  // A scrolled draft only shows part of the text; morphing it reflows the full bubble.
+  if (destination.height > source.height + 24) {
+    const entrance = target.animate(
+      [
+        { opacity: 0, transform: "translateY(12px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ],
+      { duration: 240, easing: "cubic-bezier(0.23, 1, 0.32, 1)", fill: "both" },
+    );
+    entrance.pause();
+    entrance.currentTime = 0;
+    target.style.visibility = "";
+    return {
+      update: (progress: number) => {
+        entrance.currentTime = progress * 480;
+      },
+      cancel: () => entrance.cancel(),
+    };
+  }
   const ghost = target.cloneNode(true) as HTMLElement;
   ghost.setAttribute("aria-hidden", "true");
   ghost.removeAttribute("data-chat-outgoing");
