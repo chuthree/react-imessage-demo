@@ -33,7 +33,7 @@ import {
   messageSurface,
   messageSurfaceBounds,
 } from "./messageSurface";
-import { messageCopyText } from "./messageCopy";
+import { copyMessageImage, messageCopyText } from "./messageCopy";
 import { useTheme } from "./HomeThemeProvider";
 
 const panelWidth = 192;
@@ -77,6 +77,7 @@ export default function MessageContextMenu({
   const panelRef = useRef<HTMLDivElement>(null);
   const afterClose = useRef<(() => void) | null>(null);
   const copyText = useRef("");
+  const copyImage = useRef("");
   const backdropHost =
     message?.closest<HTMLElement>("[data-reply-preview-stage]") ?? portalHost;
   const [geometry, setGeometry] = useState({
@@ -230,6 +231,9 @@ export default function MessageContextMenu({
 
     const refreshCopyText = () => {
       copyText.current = messageCopyText(source, copyLink);
+      copyImage.current =
+        source.querySelector("image")?.getAttribute("href") ||
+        source.querySelector("img")?.src || "";
     };
     refreshCopyText();
     let dirty = false;
@@ -651,12 +655,13 @@ export default function MessageContextMenu({
                 <button
                   type="button"
                   onClick={async () => {
-                    if (!copyText.current) {
+                    if (!copyText.current && !copyImage.current) {
                       setError(true);
                       return;
                     }
                     try {
-                      await copy(copyText.current);
+                      if (copyText.current) await copy(copyText.current);
+                      else await copyMessageImage(copyImage.current);
                       setOpen(false);
                     } catch {
                       setError(true);
