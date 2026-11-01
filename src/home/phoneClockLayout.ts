@@ -1,4 +1,4 @@
-import metrics from "../../public/phone-clock/metrics.json";
+import metrics from "../phone-clock/metrics.json";
 
 export function phoneClockLayout(
   time: string,

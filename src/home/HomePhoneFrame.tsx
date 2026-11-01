@@ -9,7 +9,7 @@ import {
   type CSSProperties,
 } from "react";
 import phoneImages from "./phoneImages.json";
-import paths from "../../public/phone-clock/paths.json";
+import paths from "../phone-clock/paths.json";
 import { phoneClockLayout } from "./phoneClockLayout";
 
 const subscribe = (notify: () => void) => {
