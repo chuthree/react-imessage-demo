@@ -198,8 +198,8 @@ export default function Demo() {
   const groups = [
     {
       id: "intro",
-      // Fixed development date, intentionally shown at 09:41 in the viewer’s locale.
-      sentAt: new Date(2026, 9, 15, 9, 41).getTime(),
+      // Keep the demo anniversary in this visit’s year, at 09:41 local time.
+      sentAt: new Date(new Date(openedAt).getFullYear(), 9, 15, 9, 41).getTime(),
       keys: ["introGreeting", "intro"],
     },
     {

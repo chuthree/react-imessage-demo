@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CircleAlert } from "lucide-react";
-import { useFormatter, useTranslations } from "use-intl";
+import { useNow, useTranslations } from "use-intl";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useReplyPreview } from "./ReplyPreview";
 import type { ChatTurn } from "./chat";
@@ -9,6 +9,15 @@ const receiptScale = [
   0, 0.194, 0.456, 0.675, 0.825, 0.906, 0.95, 0.975, 0.988, 1,
 ];
 const receiptTimes = [0, 0.09, 0.21, 0.33, 0.45, 0.58, 0.7, 0.82, 0.91, 1];
+
+function formatReadTime(timestamp: number, now: Date): string {
+  const date = new Date(timestamp);
+  const pad = (value: number) => String(value).padStart(2, "0");
+  if (date.toDateString() === now.toDateString()) {
+    return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+  return `${String(date.getFullYear()).padStart(4, "0")}/${pad(date.getMonth() + 1)}/${pad(date.getDate())}`;
+}
 
 export default function ChatMessageDelivery({
   turn,
@@ -26,7 +35,7 @@ export default function ChatMessageDelivery({
   onRetry: () => void;
 }) {
   const t = useTranslations("HomeChat");
-  const format = useFormatter();
+  const now = useNow({ updateInterval: 60000 });
   const reduced = useReducedMotion();
   const { inPreview } = useReplyPreview();
   const [animateFailure, setAnimateFailure] = useState(
@@ -116,12 +125,7 @@ export default function ChatMessageDelivery({
             >
               {turn.readAt
                 ? t.rich("readAt", {
-                    time: format.dateTime(new Date(turn.readAt), {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    }),
+                    time: formatReadTime(turn.readAt, now),
                     timeText: (chunks) => (
                       <span className="font-normal">{chunks}</span>
                     ),
